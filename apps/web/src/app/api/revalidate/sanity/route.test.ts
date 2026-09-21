@@ -78,6 +78,7 @@ describe("POST /api/revalidate/sanity", () => {
     delete process.env.SANITY_PROJECT_ID;
     delete process.env.SANITY_DATASET;
     delete process.env.SANITY_WEBHOOK_ID;
+    delete process.env.PATO_HOSTED_INTERNAL_PREVIEW;
     vi.restoreAllMocks();
   });
 
@@ -127,16 +128,24 @@ describe("POST /api/revalidate/sanity", () => {
   });
 
   it.each([
-    [{ "idempotency-key": " " }, 400],
-    [{ "sanity-operation": "publish" }, 400],
-    [{ "content-type": "text/plain" }, 415],
-    [{ "sanity-signature": "" }, 401],
-  ] as const)("rejects invalid request metadata", async (headers, status) => {
-    const response = await POST(request(canonical, headers));
-    expect(response.status).toBe(status);
-    expect(mocks.claim).not.toHaveBeenCalled();
-    await assertPrivate(response);
-  });
+    [{ "idempotency-key": " " }, 400, "invalid_idempotency_key"],
+    [{ "sanity-operation": "publish" }, 400, "invalid_operation"],
+    [{ "content-type": "text/plain" }, 415, "invalid_content_type"],
+    [{ "sanity-signature": "" }, 401, "invalid_signature"],
+  ] as const)(
+    "rejects invalid request metadata",
+    async (headers, status, outcome) => {
+      const response = await POST(request(canonical, headers));
+      expect(response.status).toBe(status);
+      expect(mocks.claim).not.toHaveBeenCalled();
+      const event = JSON.parse(
+        String(mocks.logWarn.mock.calls.at(-1)?.[0]),
+      ) as Record<string, unknown>;
+      expect(event).toMatchObject({ outcome, status });
+      expect(JSON.stringify(event)).not.toContain(secret);
+      await assertPrivate(response);
+    },
+  );
 
   it("requires an idempotency key", async () => {
     const response = await POST(
@@ -172,6 +181,15 @@ describe("POST /api/revalidate/sanity", () => {
 
   it("fails closed when the expected project or dataset is not configured", async () => {
     delete process.env.SANITY_DATASET;
+    const response = await POST(request());
+    expect(response.status).toBe(503);
+    expect(mocks.validSignature).not.toHaveBeenCalled();
+    expect(mocks.logError).toHaveBeenCalledOnce();
+  });
+
+  it("requires the configured webhook ID on a hosted internal preview", async () => {
+    process.env.PATO_HOSTED_INTERNAL_PREVIEW = "authenticated";
+    delete process.env.SANITY_WEBHOOK_ID;
     const response = await POST(request());
     expect(response.status).toBe(503);
     expect(mocks.validSignature).not.toHaveBeenCalled();

@@ -8,6 +8,8 @@ The internal demo sets generic robots metadata, `robots.txt` and `X-Robots-Tag` 
 
 A future public release additionally requires `PATO_SITE_URL` with the approved HTTPS origin. Only approved Sanity content can then produce canonical, Open Graph/Twitter metadata, sitemap and `FoodEstablishment` structured data. The URL is never inferred from request headers. Preview stays non-indexable and never emits business structured data.
 
+Sanity Presentation embeds this app in an iframe. Set `PATO_STUDIO_ORIGIN` to the exact trusted Studio origin so the Content Security Policy allows only that parent; hosted values must use HTTPS. This replaces broad or cross-origin-incompatible frame headers without making the preview public.
+
 ## Integration adapters
 
 - `/api/draft/enable?secret=…&redirect=/` requires `SANITY_PREVIEW_SECRET` of at least 32 characters. Draft cookies expire after 30 minutes. Only an internal Sanity surface honors the cookie, uses the draft perspective and bypasses the published-content cache.

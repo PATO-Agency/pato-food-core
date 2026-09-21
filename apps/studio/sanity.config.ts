@@ -8,8 +8,19 @@ import {
   structure,
 } from "@pato-food/sanity-schema";
 
-const previewOrigin =
-  process.env.SANITY_STUDIO_PREVIEW_ORIGIN || "http://localhost:3000";
+const previewUrl =
+  process.env.SANITY_STUDIO_PREVIEW_URL ||
+  process.env.SANITY_STUDIO_PREVIEW_ORIGIN ||
+  "http://localhost:3000";
+const parsedPreviewUrl = new URL(previewUrl);
+const previewOrigin = parsedPreviewUrl.origin;
+const isLocalPreview =
+  parsedPreviewUrl.protocol === "http:" &&
+  ["localhost", "127.0.0.1", "[::1]"].includes(parsedPreviewUrl.hostname);
+if (parsedPreviewUrl.protocol !== "https:" && !isLocalPreview)
+  throw new Error(
+    "SANITY_STUDIO_PREVIEW_URL must use HTTPS or a loopback HTTP origin",
+  );
 
 // Buildable scaffold only. Supply a separately owned project to connect a Studio.
 export default defineConfig({
@@ -21,7 +32,7 @@ export default defineConfig({
     structureTool({ structure }),
     presentationTool({
       previewUrl: {
-        initial: previewOrigin,
+        initial: previewUrl,
         previewMode: {
           enable: "/api/draft/enable",
           disable: "/api/draft/disable",

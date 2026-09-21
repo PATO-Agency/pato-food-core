@@ -53,8 +53,11 @@ function expectedSource() {
   const projectId = process.env.SANITY_PROJECT_ID?.trim();
   const dataset = process.env.SANITY_DATASET?.trim();
   const webhookId = process.env.SANITY_WEBHOOK_ID?.trim();
+  const hostedInternalPreview =
+    process.env.PATO_HOSTED_INTERNAL_PREVIEW?.trim() === "authenticated";
   if (!projectId || !/^[a-z0-9-]+$/.test(projectId)) return null;
   if (!dataset || !/^[a-z0-9_-]+$/.test(dataset)) return null;
+  if (hostedInternalPreview && !webhookId) return null;
   if (webhookId && webhookId.length > MAX_LOG_VALUE_LENGTH) return null;
   return { projectId, dataset, webhookId };
 }
@@ -78,6 +81,16 @@ function response(body: Record<string, unknown>, status = 200) {
   return NextResponse.json(body, { status, headers: privateHeaders });
 }
 
+function reject(
+  request: Request,
+  outcome: string,
+  status: number,
+  message: string,
+) {
+  logWebhook("warn", request, outcome, status);
+  return response({ error: message }, status);
+}
+
 export async function POST(request: Request) {
   const secret = process.env.SANITY_WEBHOOK_SECRET;
   const source = expectedSource();
@@ -86,15 +99,20 @@ export async function POST(request: Request) {
     return response({ error: "Webhook is not configured" }, 503);
   }
   if (!request.headers.get("content-type")?.includes("application/json"))
-    return response({ error: "JSON required" }, 415);
+    return reject(request, "invalid_content_type", 415, "JSON required");
   if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES)
-    return response({ error: "Payload too large" }, 413);
+    return reject(request, "payload_too_large", 413, "Payload too large");
   const idempotencyKey = request.headers.get("idempotency-key")?.trim();
   if (!idempotencyKey || idempotencyKey.length > 512)
-    return response({ error: "Idempotency-Key required" }, 400);
+    return reject(
+      request,
+      "invalid_idempotency_key",
+      400,
+      "Idempotency-Key required",
+    );
   // Bound streamed input too: Content-Length cannot be trusted.
   const reader = request.body?.getReader();
-  if (!reader) return response({ error: "Body required" }, 400);
+  if (!reader) return reject(request, "missing_body", 400, "Body required");
   let size = 0;
   const chunks: Uint8Array[] = [];
   try {
@@ -104,12 +122,12 @@ export async function POST(request: Request) {
       size += value.length;
       if (size > MAX_BODY_BYTES) {
         await reader.cancel();
-        return response({ error: "Payload too large" }, 413);
+        return reject(request, "payload_too_large", 413, "Payload too large");
       }
       chunks.push(value);
     }
   } catch {
-    return response({ error: "Body could not be read" }, 400);
+    return reject(request, "unreadable_body", 400, "Body could not be read");
   }
   const body = Buffer.concat(chunks).toString("utf8");
   const signature = request.headers.get(SIGNATURE_HEADER_NAME);
@@ -126,14 +144,21 @@ export async function POST(request: Request) {
   try {
     parsed = JSON.parse(body);
   } catch {
-    return response({ error: "Invalid JSON" }, 400);
+    return reject(request, "invalid_json", 400, "Invalid JSON");
   }
   const operation = parseSanityOperation(
     request.headers.get("sanity-operation"),
   );
-  if (!operation) return response({ error: "Invalid Sanity operation" }, 400);
+  if (!operation)
+    return reject(
+      request,
+      "invalid_operation",
+      400,
+      "Invalid Sanity operation",
+    );
   const tags = tagsForWebhook(parsed);
-  if (!tags) return response({ error: "Unsupported document" }, 400);
+  if (!tags)
+    return reject(request, "unsupported_document", 400, "Unsupported document");
   const documentId = (parsed as { _id: string })._id;
   if (!hasExpectedSource(request, documentId, source)) {
     logWebhook("warn", request, "unexpected_source", 403);

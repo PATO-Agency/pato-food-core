@@ -210,6 +210,7 @@ async function deliverWebhook(input: {
   document: DocumentStub;
   operation: "create" | "update" | "delete";
   key: string;
+  webhookId: string;
 }) {
   const body = JSON.stringify(input.document);
   const signature = await encodeSignatureHeader(body, Date.now(), input.secret);
@@ -224,7 +225,7 @@ async function deliverWebhook(input: {
         "sanity-document-id": input.document._id,
         "sanity-operation": input.operation,
         "sanity-project-id": input.projectId,
-        "sanity-webhook-id": "pato-synthetic-local",
+        "sanity-webhook-id": input.webhookId,
         "sanity-webhook-signature": signature,
       },
       body,
@@ -259,6 +260,8 @@ async function main() {
   const readToken = process.env.SANITY_READ_TOKEN?.trim();
   const writeToken = process.env.SANITY_WRITE_TOKEN?.trim();
   const webhookSecret = process.env.SANITY_WEBHOOK_SECRET?.trim();
+  const webhookId =
+    process.env.SANITY_WEBHOOK_ID?.trim() || "pato-synthetic-local";
   const baseUrl = baseUrlArgument?.trim().replace(/\/$/, "");
 
   console.log("PATO synthetic editorial integration plan");
@@ -391,6 +394,7 @@ async function main() {
       const webhookInput = {
         baseUrl,
         secret: webhookSecret,
+        webhookId,
         projectId,
         dataset,
         document: { _id: ids.item, _type: "menuItem" },
@@ -426,6 +430,7 @@ async function main() {
       await deliverWebhook({
         baseUrl,
         secret: webhookSecret,
+        webhookId,
         projectId,
         dataset,
         document: { _id: ids.item, _type: "menuItem" },
@@ -454,6 +459,7 @@ async function main() {
       await deliverWebhook({
         baseUrl,
         secret: webhookSecret,
+        webhookId,
         projectId,
         dataset,
         document: { _id: ids.faq, _type: "faq" },
