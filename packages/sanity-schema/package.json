@@ -1,0 +1,15 @@
+{
+  "name": "@pato-food/sanity-schema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@pato-food/content-contract": "0.1.0",
+    "sanity": "6.15.0"
+  }
+}

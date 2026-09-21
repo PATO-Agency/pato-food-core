@@ -1,0 +1,20 @@
+node_modules/
+.next/
+dist/
+coverage/
+.turbo/
+.sanity/
+.vercel/
+# Internal planning and client records stay local.
+docs/
+2026-09-16-pato-food-landing-design.md
+2026-09-16-pato-food-landing-service-launch.md
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+*.log
+playwright-report/
+test-results/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,14 @@
+{
+  "name": "@pato-food/vicafoods",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@pato-food/content-contract": "0.1.0"
+  }
+}
