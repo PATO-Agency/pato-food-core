@@ -12,7 +12,7 @@ const paths = execFileSync(
 const signatures = [
   /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
   /(?:ghp|github_pat)_[a-zA-Z0-9_]{30,}/,
-  /(?:SANITY_READ_TOKEN|SANITY_WEBHOOK_SECRET|SANITY_PREVIEW_SECRET)\s*[:=]\s*["']?[a-zA-Z0-9_-]{24,}/,
+  /(?:SANITY_READ_TOKEN|SANITY_REVALIDATION_TOKEN|SANITY_WEBHOOK_SECRET|SANITY_PREVIEW_SECRET)\s*[:=]\s*["']?[a-zA-Z0-9_-]{24,}/,
 ];
 const violations = [];
 for (const path of paths) {

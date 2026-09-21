@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "npm run dev --workspace=@pato-food/web",
     "dev:studio": "npm run dev --workspace=@pato-food/studio",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build --workspace=@pato-food/studio && npm run build --workspace=@pato-food/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint apps packages examples tooling vitest.config.ts",
     "format": "prettier --write apps packages examples tooling .github package.json tsconfig.base.json vitest.config.ts eslint.config.mjs README.md",

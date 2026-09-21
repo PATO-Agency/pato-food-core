@@ -23,3 +23,7 @@ jobs:
       - run: npm run check
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+          # CI validates the internal synthetic baseline; it must never require
+          # a live CMS, editor token, or any customer environment.
+          PATO_CONTENT_SOURCE: fixture
+          PATO_SITE_VISIBILITY: internal
