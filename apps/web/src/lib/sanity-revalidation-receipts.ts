@@ -11,11 +11,13 @@ type Receipt = Readonly<{
   _rev: string;
   status: ReceiptStatus;
   leaseUntil?: string;
+  completedAt?: string;
 }>;
 
 export type ReceiptClaim =
   | { state: "claimed"; receiptId: string }
-  | { state: "replay"; receiptId: string };
+  | { state: "replay"; receiptId: string }
+  | { state: "in_progress"; receiptId: string };
 
 type SanityMutationClient = {
   fetch: (
@@ -33,18 +35,38 @@ export function hashIdempotencyKey(key: string): string {
   return createHash("sha256").update(key, "utf8").digest("hex");
 }
 
-function canClaim(receipt: Receipt, now: Date) {
+function receiptState(receipt: Receipt, now: Date) {
+  if (receipt.status === "completed") {
+    if (
+      !receipt.completedAt ||
+      !Number.isFinite(Date.parse(receipt.completedAt))
+    )
+      throw new Error("Completed receipt has no completion evidence");
+    return "replay";
+  }
+  if (receipt.status === "pending" || receipt.status === "failed")
+    return "claimable";
+  if (receipt.status === "processing") {
+    if (!receipt.leaseUntil) return "claimable";
+    const leaseEnd = Date.parse(receipt.leaseUntil);
+    if (!Number.isFinite(leaseEnd)) throw new Error("Invalid receipt lease");
+    return leaseEnd > now.getTime() ? "in_progress" : "claimable";
+  }
+  throw new Error("Invalid receipt status");
+}
+
+function isRevisionConflict(error: unknown) {
   return (
-    receipt.status === "pending" ||
-    receipt.status === "failed" ||
-    (receipt.status === "processing" &&
-      (!receipt.leaseUntil || Date.parse(receipt.leaseUntil) <= now.getTime()))
+    typeof error === "object" &&
+    error !== null &&
+    "statusCode" in error &&
+    error.statusCode === 409
   );
 }
 
 /**
  * Claims a durable event receipt with a revision-guarded lease. A competing
- * request can only observe a replay state; it never owns the same event.
+ * request must not acknowledge the event until completion is evidenced.
  */
 export async function claimReceipt(
   client: SanityMutationClient,
@@ -64,11 +86,12 @@ export async function claimReceipt(
     },
   });
   const receipt = await client.fetch(
-    "*[_id == $id][0]{_id, _rev, status, leaseUntil}",
+    "*[_id == $id][0]{_id, _rev, status, leaseUntil, completedAt}",
     { id },
   );
-  if (!receipt || !canClaim(receipt, now))
-    return { state: "replay", receiptId: id };
+  if (!receipt) throw new Error("Created receipt could not be read");
+  const state = receiptState(receipt, now);
+  if (state !== "claimable") return { state, receiptId: id };
 
   const leaseUntil = new Date(now.getTime() + LEASE_MS).toISOString();
   try {
@@ -82,9 +105,17 @@ export async function claimReceipt(
       },
     });
     return { state: "claimed", receiptId: id };
-  } catch {
-    // A revision conflict means another invocation has claimed it.
-    return { state: "replay", receiptId: id };
+  } catch (error) {
+    if (!isRevisionConflict(error)) throw error;
+    const current = await client.fetch(
+      "*[_id == $id][0]{_id, _rev, status, leaseUntil, completedAt}",
+      { id },
+    );
+    if (!current) throw new Error("Conflicted receipt could not be read");
+    const currentState = receiptState(current, now);
+    if (currentState !== "claimable")
+      return { state: currentState, receiptId: id };
+    throw new Error("Receipt conflict without processing evidence");
   }
 }
 

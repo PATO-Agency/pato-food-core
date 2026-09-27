@@ -120,6 +120,46 @@ describe("POST /api/revalidate/sanity", () => {
     await assertPrivate(response);
   });
 
+  it("returns a retryable response while another invocation holds the lease", async () => {
+    mocks.claim.mockResolvedValue({
+      state: "in_progress",
+      receiptId: "receipt-1",
+    });
+    const response = await POST(request());
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      error: "Webhook processing is in progress",
+    });
+    expect(mocks.revalidateTag).not.toHaveBeenCalled();
+    expect(mocks.complete).not.toHaveBeenCalled();
+    const event = JSON.parse(
+      String(mocks.logWarn.mock.calls.at(-1)?.[0]),
+    ) as Record<string, unknown>;
+    expect(event).toMatchObject({ outcome: "in_progress", status: 503 });
+    expect(JSON.stringify(event)).not.toContain(secret);
+    await assertPrivate(response);
+  });
+
+  it("returns 503 for a receipt storage failure without acknowledging the event", async () => {
+    mocks.claim.mockRejectedValue(new Error("private storage failure"));
+    const response = await POST(request());
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({
+      error: "Webhook receipt unavailable",
+    });
+    expect(mocks.revalidateTag).not.toHaveBeenCalled();
+    expect(mocks.complete).not.toHaveBeenCalled();
+    const event = JSON.parse(
+      String(mocks.logError.mock.calls.at(-1)?.[0]),
+    ) as Record<string, unknown>;
+    expect(event).toMatchObject({
+      outcome: "receipt_unavailable",
+      status: 503,
+    });
+    expect(JSON.stringify(event)).not.toContain("private storage failure");
+    await assertPrivate(response);
+  });
+
   it("verifies the unparsed request text before JSON handling", async () => {
     const raw = '{  "_id" : "menu-1", "_type" : "menuItem" }';
     const response = await POST(request(raw));

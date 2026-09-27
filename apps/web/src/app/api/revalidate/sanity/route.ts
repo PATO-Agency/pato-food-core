@@ -176,6 +176,13 @@ export async function POST(request: Request) {
       });
       return response({ replay: true, source: "sanity-webhook" });
     }
+    if (claim.state === "in_progress") {
+      logWebhook("warn", request, "in_progress", 503, {
+        eventHash,
+        receiptId: claim.receiptId,
+      });
+      return response({ error: "Webhook processing is in progress" }, 503);
+    }
     try {
       for (const tag of tags) revalidateTag(tag, "max");
       await completeReceipt(client, claim.receiptId);
