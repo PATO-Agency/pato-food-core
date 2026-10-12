@@ -9,6 +9,25 @@ import type { LandingContent, LandingImage, LandingItem } from "./model";
 export * from "./model";
 export * from "./conversion-link";
 
+function EditorialMark() {
+  return (
+    <svg
+      className="editorial-mark"
+      viewBox="0 0 80 80"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M40 8v64M8 40h64M17 17l46 46M17 63l46-46"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <circle cx="40" cy="40" r="29" stroke="currentColor" strokeWidth="0.6" />
+    </svg>
+  );
+}
+
 export function SectionHeading({
   eyebrow,
   title,
@@ -56,7 +75,9 @@ export function EditorialImage({
         />
       ) : (
         <div className="image-placeholder">
-          <span aria-hidden="true">✳</span>
+          <span aria-hidden="true">
+            <EditorialMark />
+          </span>
           <p>Una historia por compartir</p>
           <small>Fotografía pendiente de aprobación</small>
         </div>
@@ -166,7 +187,9 @@ export function FoodLanding({
               </a>
             </div>
             <div className="hero-note">
-              <span aria-hidden="true">✳</span>
+              <span aria-hidden="true">
+                <EditorialMark />
+              </span>
               <p>
                 {c.tagline}
                 <br />
