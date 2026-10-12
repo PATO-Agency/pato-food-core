@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
+import { createPreviewTool } from "./preview-tool";
 import {
   schemaTypes,
   singletonTypes,
@@ -13,6 +14,15 @@ const previewUrl =
   process.env.SANITY_STUDIO_PREVIEW_ORIGIN ||
   "http://localhost:3000";
 const parsedPreviewUrl = new URL(previewUrl);
+if (
+  parsedPreviewUrl.search ||
+  parsedPreviewUrl.hash ||
+  parsedPreviewUrl.username ||
+  parsedPreviewUrl.password
+)
+  throw new Error(
+    "SANITY_STUDIO_PREVIEW_URL must not contain credentials or query parameters",
+  );
 const previewOrigin = parsedPreviewUrl.origin;
 const isLocalPreview =
   parsedPreviewUrl.protocol === "http:" &&
@@ -41,6 +51,7 @@ export default defineConfig({
       allowOrigins: [previewOrigin],
     }),
   ],
+  tools: [createPreviewTool(previewOrigin)],
   schema: {
     types: schemaTypes,
     templates: (templates) =>
