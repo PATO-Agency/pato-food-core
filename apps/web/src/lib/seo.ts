@@ -6,6 +6,10 @@ import {
 } from "@pato-food/content-contract";
 import type { SiteConfiguration } from "./adapter";
 import type { SiteVisibility } from "./content-policy";
+import {
+  assertPublicSeoConfiguration,
+  isNonProductionDeployment,
+} from "./indexing-policy";
 
 const internalTitle = "PATO Food · Demostración interna";
 const internalDescription =
@@ -21,7 +25,11 @@ const schemaDays = [
   "https://schema.org/Saturday",
 ] as const;
 
-export type SeoPolicy = { visibility: SiteVisibility };
+export type SeoPolicy = {
+  visibility: SiteVisibility;
+  deploymentEnvironment?: string;
+  runtimeEnvironment?: string;
+};
 
 export interface StructuredData {
   "@context": "https://schema.org";
@@ -49,6 +57,7 @@ export interface StructuredData {
 }
 
 function publicUrl(config: SiteConfiguration): URL {
+  assertPublicSeoConfiguration(config);
   const parsed = httpsUrlSchema.safeParse(config.publicUrl);
   if (!parsed.success)
     throw new Error("Public release requires an explicit HTTPS public URL");
@@ -70,7 +79,13 @@ function isPrivate({
   policy: SeoPolicy;
   preview: boolean;
 }) {
-  return preview || policy.visibility !== "public";
+  return (
+    preview ||
+    policy.visibility !== "public" ||
+    (policy.runtimeEnvironment !== undefined &&
+      policy.runtimeEnvironment !== "production") ||
+    isNonProductionDeployment(policy.deploymentEnvironment)
+  );
 }
 
 export function buildMetadata({
@@ -195,7 +210,7 @@ export function buildRobots({
   policy: SeoPolicy;
   config: SiteConfiguration;
 }): MetadataRoute.Robots {
-  if (policy.visibility !== "public")
+  if (isPrivate({ policy, preview: false }))
     return { rules: { userAgent: "*", disallow: "/" } };
 
   const canonical = publicUrl(config);
@@ -212,7 +227,7 @@ export function buildSitemap({
   policy: SeoPolicy;
   config: SiteConfiguration;
 }): MetadataRoute.Sitemap {
-  if (policy.visibility !== "public") return [];
+  if (isPrivate({ policy, preview: false })) return [];
   return [
     {
       url: publicUrl(config).toString(),

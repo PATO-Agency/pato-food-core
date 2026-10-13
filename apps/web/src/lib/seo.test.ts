@@ -89,6 +89,66 @@ describe("SEO release policy", () => {
     expect(JSON.stringify(metadata)).not.toContain("VICAFOODS");
   });
 
+  it("keeps Vercel previews non-indexable even without a draft cookie", () => {
+    const policy = {
+      visibility: "public" as const,
+      deploymentEnvironment: "preview",
+    };
+    expect(
+      buildStructuredData({
+        policy,
+        config: publicConfig,
+        content: approvedContent(),
+      }),
+    ).toBeNull();
+    const metadata = buildMetadata({
+      policy,
+      config: publicConfig,
+      content: approvedContent(),
+    });
+    expect(metadata.robots).toMatchObject({ index: false, follow: false });
+    expect(metadata.alternates).toBeUndefined();
+    expect(buildRobots({ policy, config: publicConfig })).toEqual({
+      rules: { userAgent: "*", disallow: "/" },
+    });
+    expect(buildSitemap({ policy, config: publicConfig })).toEqual([]);
+  });
+
+  it("refuses public SEO output when the business release is still blocked", () => {
+    const config = { ...publicConfig, publishBlocked: true };
+    expect(() =>
+      buildMetadata({
+        policy: { visibility: "public" },
+        config,
+        content: approvedContent(),
+      }),
+    ).toThrow("Public release blocked");
+    expect(() =>
+      buildRobots({ policy: { visibility: "public" }, config }),
+    ).toThrow("Public release blocked");
+    expect(() =>
+      buildSitemap({ policy: { visibility: "public" }, config }),
+    ).toThrow("Public release blocked");
+  });
+
+  it.each(["development", "test", "unexpected"])(
+    "keeps a %s runtime non-indexable when Vercel is absent",
+    (runtimeEnvironment) => {
+      const policy = { visibility: "public" as const, runtimeEnvironment };
+      const content = approvedContent();
+      expect(
+        buildMetadata({ policy, config: publicConfig, content }).robots,
+      ).toMatchObject({ index: false, follow: false });
+      expect(
+        buildStructuredData({ policy, config: publicConfig, content }),
+      ).toBeNull();
+      expect(buildRobots({ policy, config: publicConfig })).toEqual({
+        rules: { userAgent: "*", disallow: "/" },
+      });
+      expect(buildSitemap({ policy, config: publicConfig })).toEqual([]);
+    },
+  );
+
   it("emits approved public metadata and structured data", () => {
     const content = approvedContent();
     const metadata = buildMetadata({

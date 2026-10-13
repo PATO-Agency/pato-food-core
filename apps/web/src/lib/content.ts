@@ -5,11 +5,16 @@ import { resolveContentPolicy } from "./content-policy";
 import { getSanitySiteContent } from "./sanity";
 
 export function resolveRuntimeContentPolicy() {
-  return resolveContentPolicy({
+  const policy = resolveContentPolicy({
     source: process.env.PATO_CONTENT_SOURCE,
     visibility: process.env.PATO_SITE_VISIBILITY,
     config: vicafoodsConfig,
   });
+  return {
+    ...policy,
+    deploymentEnvironment: process.env.VERCEL_ENV,
+    runtimeEnvironment: process.env.NODE_ENV,
+  };
 }
 
 export function getSiteConfiguration(): SiteConfiguration {

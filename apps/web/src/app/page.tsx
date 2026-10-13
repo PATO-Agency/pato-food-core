@@ -18,7 +18,7 @@ export default async function Home() {
     policy: site.policy,
     config: site.config,
     content: site.content,
-    preview,
+    preview: draft.isEnabled || preview,
   });
   return (
     <>
