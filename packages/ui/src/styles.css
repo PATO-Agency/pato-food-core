@@ -1,3 +1,5 @@
+@import "./menu-catalog.css";
+
 :root {
   --accent: #d8ab48;
   --paper: #f5f1e9;
@@ -12,7 +14,7 @@
   --radius-sm: 0.25rem;
   --radius-md: 0.75rem;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --focus-ring: #0067c5;
+  --focus-ring: #e5b83d;
 }
 .reference-image-label {
   position: absolute;
@@ -32,10 +34,12 @@
 }
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 2rem;
+  scroll-padding-top: 1rem;
+  scrollbar-color: #6f592b #11100e;
 }
 body {
   margin: 0;
+  background: #11100e;
 }
 button,
 a {
@@ -117,8 +121,8 @@ p {
   top: -100px;
   left: 16px;
   z-index: 30;
-  background: var(--ink);
-  color: white;
+  background: var(--accent);
+  color: #11100e;
   padding: 12px;
 }
 .skip-link:focus {
@@ -741,16 +745,6 @@ p {
 .site-footer .wordmark {
   font-size: 22px;
 }
-#destacados,
-.menu-section,
-.promotions-section,
-#experiencia,
-.visit-section,
-.faq-section,
-.final-cta {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 52rem;
-}
 /* Owner preference: keep authored motion active with reduced motion as well. */
 .button,
 .text-link,
@@ -766,36 +760,6 @@ p {
     background-color 180ms ease,
     border-color 180ms ease,
     filter 180ms ease;
-}
-.hero-copy > * {
-  animation: hero-rise 600ms var(--ease-out) both;
-}
-.hero-copy > :nth-child(2) {
-  animation-delay: 70ms;
-}
-.hero-copy > :nth-child(3) {
-  animation-delay: 130ms;
-}
-.hero-copy > :nth-child(4) {
-  animation-delay: 190ms;
-}
-.hero-copy > :nth-child(5) {
-  animation-delay: 250ms;
-}
-.hero-art {
-  animation: hero-image-in 800ms 100ms var(--ease-out) both;
-}
-@supports (animation-timeline: view()) {
-  .section-heading,
-  .menu-group,
-  .promotion-card,
-  .gallery-grid figure,
-  .visit-section > div,
-  .hours-panel {
-    animation: section-reveal linear both;
-    animation-timeline: view();
-    animation-range: entry 8% cover 26%;
-  }
 }
 @media (hover: hover) and (pointer: fine) {
   .site-header nav a:hover::after {
@@ -818,36 +782,6 @@ p {
 .button:not(.disabled):not(:disabled):active {
   transform: scale(0.97);
   transition-duration: 140ms;
-}
-@keyframes hero-rise {
-  from {
-    opacity: 0.55;
-    transform: translateY(0.875rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes hero-image-in {
-  from {
-    opacity: 0.6;
-    transform: translateY(1.25rem) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-@keyframes section-reveal {
-  from {
-    opacity: 0.65;
-    transform: translateY(0.875rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 @media (min-width: 681px) {
   .featured-grid:has(> .menu-card:only-child) {
@@ -1170,5 +1104,267 @@ button:focus-visible {
   button:focus-visible,
   summary:focus-visible {
     outline-color: Highlight;
+  }
+}
+
+/* Vicafoods: dark storefront, oven gold and subtle sourced masonry. */
+.food-site {
+  --surface: color-mix(in srgb, var(--ink) 3.5%, var(--paper));
+  --line: color-mix(in srgb, var(--accent) 24%, var(--paper));
+  --muted: color-mix(in srgb, var(--ink) 72%, var(--paper));
+}
+.food-site .demo-banner {
+  background: color-mix(in srgb, var(--accent) 9%, var(--paper));
+  color: var(--accent);
+  border-bottom: 1px solid var(--line);
+}
+.food-site .demo-banner p {
+  color: var(--muted);
+}
+.food-site .button.disabled {
+  color: var(--ink);
+  border-color: var(--line);
+}
+.food-site .wordmark {
+  font-size: 2.4rem;
+  color: var(--ink);
+}
+.food-site .wordmark span {
+  color: var(--accent);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+}
+.food-site .site-header {
+  min-height: 94px;
+}
+.food-site .site-header nav a::after {
+  height: 2px;
+  background: var(--accent);
+}
+.food-site .hero {
+  grid-template-columns: minmax(0, 1.03fr) minmax(0, 0.97fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-block: clamp(3rem, 5.5vw, 5rem);
+}
+.food-site .hero h1 {
+  max-width: 14ch;
+  font-size: clamp(3.8rem, 6.7vw, 6rem);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  text-wrap: wrap;
+}
+.hero-signature {
+  color: var(--accent);
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+.food-site .hero-description {
+  margin-top: 1rem;
+  max-width: 42ch;
+}
+.food-site .hero-art {
+  width: 100%;
+  max-width: 35rem;
+}
+.food-site .hero-image {
+  aspect-ratio: 1.04;
+  max-height: 36rem;
+  border-radius: 0.65rem;
+  border: 0;
+  box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 24%);
+}
+.food-site .hero-image img {
+  object-position: center;
+}
+.food-site .hero-actions {
+  align-items: center;
+  gap: 1.5rem;
+}
+.food-site .hero-actions .conversion-pending {
+  max-width: 14rem;
+}
+.food-site .hero-actions .button.disabled {
+  min-height: 44px;
+  padding: 10px 16px;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.food-site .hero-note {
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+.food-site .hero-note p {
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+.food-site .business-lines {
+  position: relative;
+  isolation: isolate;
+  padding: 1.4rem 1.6rem;
+  border: 0;
+  background: color-mix(in srgb, #6b3624 14%, var(--paper));
+}
+.food-site .business-lines::before,
+.food-site .visit-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.12;
+  background-image: var(--rustic-texture);
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+.food-site .business-lines a {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.3vw, 1.8rem);
+  font-weight: 600;
+}
+.food-site .business-lines a > span:last-child {
+  color: var(--accent);
+}
+.food-site .section-heading {
+  max-width: 49rem;
+}
+.food-site .section-heading h2 {
+  text-wrap: wrap;
+}
+.food-site h2 {
+  font-size: clamp(2.8rem, 4.8vw, 4.6rem);
+  line-height: 1.02;
+}
+.food-site .section-heading__description {
+  font-size: 0.95rem;
+  margin-top: 1.3rem;
+}
+.food-site .product-image {
+  border: 0;
+  border-radius: 0.45rem;
+  aspect-ratio: 1.2;
+}
+.food-site .menu-card-copy {
+  border: 0;
+  padding-top: 1.3rem;
+}
+.food-site .price-row,
+.food-site .menu-price {
+  color: var(--accent);
+  font-weight: 600;
+}
+.food-site .menu-group li {
+  border-bottom-color: var(--line);
+}
+.food-site .editorial-note,
+.food-site .gallery-grid figcaption {
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.food-site .gallery-image {
+  border-radius: 0.45rem;
+}
+.food-site .visit-section {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(2rem, 5vw, 4rem);
+  background: color-mix(in srgb, #6b3624 10%, var(--paper));
+  gap: clamp(2rem, 7vw, 6rem);
+}
+.food-site .visit-section::before {
+  opacity: 0.07;
+}
+.food-site .hours-panel {
+  border-color: var(--accent);
+}
+.food-site .final-cta {
+  background: var(--accent);
+  color: #17130c;
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+.food-site .final-cta p,
+.food-site .final-cta small {
+  color: #393018;
+}
+.food-site .final-cta .button.disabled {
+  color: #17130c;
+  border-color: #665020;
+}
+.food-site .site-footer p,
+.food-site .site-footer > span {
+  font-size: 0.75rem;
+}
+.food-site .reference-image-label {
+  font-size: 0.7rem;
+  color: #fff;
+  background: #11100ee8;
+}
+@media (max-width: 1000px) {
+  .food-site .hero h1 {
+    font-size: clamp(3.4rem, 7.4vw, 5rem);
+  }
+  .food-site .hero-actions {
+    gap: 1rem;
+  }
+  .food-site .hero-art {
+    align-self: center;
+  }
+  .food-site .header-cta {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .food-site .hero {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-block: 2.5rem 3rem;
+  }
+  .food-site .hero h1 {
+    max-width: 15ch;
+    font-size: clamp(3.35rem, 10.2vw, 4.8rem);
+  }
+  .food-site .hero-art {
+    max-width: none;
+    padding-left: 0;
+  }
+  .food-site .hero-image {
+    aspect-ratio: 1.3;
+    border-radius: 0.5rem;
+  }
+  .food-site .hero-actions {
+    align-items: flex-start;
+  }
+  .food-site .hero-actions .button.disabled {
+    display: none;
+  }
+  .food-site .hero-actions .conversion-pending {
+    padding-top: 0.5rem;
+  }
+  .food-site .business-lines {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0.6rem 1.2rem;
+  }
+  .food-site .business-lines a {
+    padding-block: 0.7rem;
+  }
+  .food-site .business-lines a + a {
+    border-top: 1px solid var(--line);
+  }
+  .food-site .visit-section {
+    grid-template-columns: 1fr;
+    padding: 1.6rem;
+  }
+  .food-site .site-header {
+    min-height: 115px;
+  }
+  .food-site .wordmark {
+    font-size: 2rem;
+  }
+  .food-site .site-header nav {
+    font-size: 0.75rem;
+    gap: 1.3rem;
   }
 }

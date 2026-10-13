@@ -6,6 +6,8 @@ import {
   type ConversionLocation,
 } from "./conversion-link";
 import type { LandingContent, LandingImage, LandingItem } from "./model";
+import { MenuCatalog } from "./menu-catalog";
+import { LandingMotion } from "./landing-motion";
 export * from "./model";
 export * from "./conversion-link";
 
@@ -29,7 +31,6 @@ function EditorialMark() {
 }
 
 export function SectionHeading({
-  eyebrow,
   title,
   text,
 }: {
@@ -39,7 +40,6 @@ export function SectionHeading({
 }) {
   return (
     <div className="section-heading">
-      <p className="eyebrow">{eyebrow}</p>
       <h2>{title}</h2>
       {text && <p className="section-heading__description">{text}</p>}
     </div>
@@ -141,9 +141,12 @@ export function FoodLanding({
     "--accent": c.theme?.accent,
     "--paper": c.theme?.background,
     "--ink": c.theme?.foreground,
+    "--rustic-texture": c.theme?.rusticTexture
+      ? `url("${c.theme.rusticTexture}")`
+      : undefined,
   } as CSSProperties;
   return (
-    <div className="food-site" style={style}>
+    <LandingMotion style={style}>
       <a className="skip-link" href="#main">
         Saltar al contenido
       </a>
@@ -177,22 +180,16 @@ export function FoodLanding({
       <main id="main">
         <section className="hero section-shell" aria-labelledby="hero-title">
           <div className="hero-copy">
-            <p className="eyebrow">
-              <span className="little-line" />
-              {c.hero.eyebrow}
-            </p>
             <h1 id="hero-title">{c.hero.title}</h1>
+            <p className="hero-signature">{c.hero.eyebrow}</p>
             <p className="hero-description">{c.hero.text}</p>
             <div className="hero-actions">
-              {cta("hero")}
-              <a className="text-link" href="#carta">
+              <a className="button menu-explore" href="#carta">
                 Explora la carta <span aria-hidden="true">↓</span>
               </a>
+              {cta("hero")}
             </div>
             <div className="hero-note">
-              <span aria-hidden="true">
-                <EditorialMark />
-              </span>
               <p>
                 {c.tagline}
                 <br />
@@ -206,14 +203,13 @@ export function FoodLanding({
               variant="hero-image"
               priority
             />
-            <span className="image-index">01 / {c.name}</span>
           </div>
         </section>
         <section
           className="business-lines section-shell"
           aria-label="Líneas del negocio"
         >
-          {c.lines.map((line, i) => {
+          {c.lines.map((line) => {
             const category = c.categories.find(
               (candidate) =>
                 candidate.name === line || candidate.group === line,
@@ -223,7 +219,6 @@ export function FoodLanding({
                 key={line}
                 href={category ? `#category-${category.id}` : "#carta"}
               >
-                <span className="line-number">0{i + 1}</span>
                 <span>{line}</span>
                 <span aria-hidden="true">↗</span>
               </a>
@@ -261,52 +256,7 @@ export function FoodLanding({
               />
               {cta("menu")}
             </div>
-            <nav className="category-links" aria-label="Categorías de la carta">
-              {c.categories.map((category) => (
-                <a href={`#category-${category.id}`} key={category.id}>
-                  {category.name}
-                </a>
-              ))}
-            </nav>
-            <div className="menu-groups">
-              {c.categories.map((category) => (
-                <section
-                  id={`category-${category.id}`}
-                  className="menu-group"
-                  key={category.id}
-                >
-                  <div>
-                    <p className="eyebrow">{category.group ?? "CARTA"}</p>
-                    <h3>{category.name}</h3>
-                    {category.description && (
-                      <p className="menu-group__intro">
-                        {category.description}
-                      </p>
-                    )}
-                  </div>
-                  <ul>
-                    {c.items
-                      .filter((item) => item.categoryId === category.id)
-                      .map((item) => (
-                        <li key={item.id}>
-                          <div>
-                            <h4>{item.name}</h4>
-                            {item.description && (
-                              <p className="menu-item__description">
-                                {item.description}
-                              </p>
-                            )}
-                            {item.unavailable && (
-                              <span className="status">Agotado</span>
-                            )}
-                          </div>
-                          <span className="menu-price">{item.price}</span>
-                        </li>
-                      ))}
-                  </ul>
-                </section>
-              ))}
-            </div>
+            <MenuCatalog categories={c.categories} items={c.items} />
           </div>
         </section>
         {c.promotions.length > 0 && (
@@ -439,7 +389,6 @@ export function FoodLanding({
         )}
         <section className="final-cta">
           <div className="section-shell">
-            <p className="eyebrow">NOS ENCONTRAMOS EN LA MESA</p>
             <h2>¿Qué se te antoja hoy?</h2>
             {cta("footer")}
             {c.conversion.phone && (
@@ -466,6 +415,6 @@ export function FoodLanding({
         </p>
         <span>Diseñado por PATO</span>
       </footer>
-    </div>
+    </LandingMotion>
   );
 }

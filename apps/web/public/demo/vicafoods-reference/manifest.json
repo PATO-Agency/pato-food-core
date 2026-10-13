@@ -21,8 +21,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1067,
-      "bytes": 215124,
-      "sha256": "6bc1d8caf76a764fd31595f23e7dbbf9be9a8695930932a28d3f5fff86d1db15"
+      "sha256": "a8c11cd8a8adf23c88faa5d82d209b55c3ad95e8e34cfd84063f85543dd2c7d6",
+      "downloadSha256": "6bc1d8caf76a764fd31595f23e7dbbf9be9a8695930932a28d3f5fff86d1db15",
+      "bytes": 215330
     },
     {
       "key": "steak",
@@ -41,8 +42,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1600,
-      "bytes": 310273,
-      "sha256": "8ec2259dd925613c0fbdda6596f92243108d0698bae6fc5ff3de79ab3ecbd710"
+      "sha256": "8c7dfcf4a004ee8269d8405df047f66d87d3c7b52035e80312c7d0c57247687f",
+      "downloadSha256": "8ec2259dd925613c0fbdda6596f92243108d0698bae6fc5ff3de79ab3ecbd710",
+      "bytes": 310496
     },
     {
       "key": "fries",
@@ -61,8 +63,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1067,
-      "bytes": 189335,
-      "sha256": "17e65e7b251429a2706a9f4ba7ee8fad12ff06b803b32f53a8d355bc7fe7c852"
+      "sha256": "ec520b6aeaac6071ce6c3f0869bd6a4f5325faeb8ce6ae32540bc75235660b35",
+      "downloadSha256": "17e65e7b251429a2706a9f4ba7ee8fad12ff06b803b32f53a8d355bc7fe7c852",
+      "bytes": 189553
     },
     {
       "key": "salad",
@@ -81,8 +84,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1067,
-      "bytes": 75660,
-      "sha256": "0970fd758c979e15f9ea807d9eb5e777ed16686a010587ed9288de9db50a8ddf"
+      "sha256": "08d8d93c3943611eeaf8250324d7b6c2cd3addf4b563ad21aeebc9735b52fc95",
+      "downloadSha256": "0970fd758c979e15f9ea807d9eb5e777ed16686a010587ed9288de9db50a8ddf",
+      "bytes": 75860
     },
     {
       "key": "sausageFries",
@@ -101,8 +105,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1067,
-      "bytes": 162385,
-      "sha256": "35bcd35b059ae7aca555ebc869196ab2600e2fc668b03a4f93623ba0d7bae0df"
+      "sha256": "287ef0e65bb238a1c8ba69cab6cf3a969755b9e306ab1859dfb0119f2137d05f",
+      "downloadSha256": "35bcd35b059ae7aca555ebc869196ab2600e2fc668b03a4f93623ba0d7bae0df",
+      "bytes": 162614
     },
     {
       "key": "rawBeef",
@@ -121,8 +126,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1251,
-      "bytes": 260877,
-      "sha256": "bc8967d01305f9e4b247b5019c57fffac3a12f966db3fa811fabf0eef1bce7f9"
+      "sha256": "aee2eb05d122cb8ea926ed0c9a269e2815f211c23b1dd8f8c9734eed7a6d1c12",
+      "downloadSha256": "bc8967d01305f9e4b247b5019c57fffac3a12f966db3fa811fabf0eef1bce7f9",
+      "bytes": 261083
     },
     {
       "key": "nuggets",
@@ -141,8 +147,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1067,
-      "bytes": 161987,
-      "sha256": "ee5e7226270be9a53532c8b0a8ec4d2b17883150c81332bc660dcf2472fac447"
+      "sha256": "ec46038a236025f9f026402c9d0d0672637591774d751ebca2087edbb66f9537",
+      "downloadSha256": "ee5e7226270be9a53532c8b0a8ec4d2b17883150c81332bc660dcf2472fac447",
+      "bytes": 162196
     },
     {
       "key": "sausageBread",
@@ -161,8 +168,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1067,
-      "bytes": 172116,
-      "sha256": "47bc177d432d0675bcbd497104572c94060606764f31da18cb9f2638264d87dc"
+      "sha256": "d6e87ce2de1f0c97df18459c1a3d1bb878cd84f0aac905bfcf4916b70b3b2611",
+      "downloadSha256": "47bc177d432d0675bcbd497104572c94060606764f31da18cb9f2638264d87dc",
+      "bytes": 172345
     },
     {
       "key": "grill",
@@ -181,8 +189,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 1067,
-      "bytes": 158213,
-      "sha256": "9b1f2100876f6738f14211746b1f6d1e1d2ca9601f57b307607558f8187e7770"
+      "sha256": "b2d233d942f5b5658f48467a132da036fe442e2673c5cd5814ba23ead191e500",
+      "downloadSha256": "9b1f2100876f6738f14211746b1f6d1e1d2ca9601f57b307607558f8187e7770",
+      "bytes": 158445
     },
     {
       "key": "breadedChicken",
@@ -201,8 +210,9 @@
       "deliveryNote": "Versión de 1600 px entregada por Pexels; encuadre completo, sin edición local.",
       "width": 1600,
       "height": 2399,
-      "bytes": 481563,
-      "sha256": "80409ed87e32e222ac3ca87ae80ad3b7d7f61aaba428735d90920e42c0b02b67"
+      "sha256": "94eb90613f9a4e5b843a3e6a1e5b69ab6814ad738e7dbfbb3fabbcbaaa239c23",
+      "downloadSha256": "80409ed87e32e222ac3ca87ae80ad3b7d7f61aaba428735d90920e42c0b02b67",
+      "bytes": 481807
     }
   ],
   "itemPhotos": {

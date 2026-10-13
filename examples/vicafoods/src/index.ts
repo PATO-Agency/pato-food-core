@@ -10,7 +10,10 @@ export const vicafoodsConfig = {
   currency: "PEN",
   timezone: "America/Lima",
   theme: {
-    primary: "#d6ae51",
+    primary: "#e5b83d",
+    background: "#11100e",
+    foreground: "#f8f4eb",
+    rusticTexture: "/demo/vicafoods-reference/ladrillo-referencial.jpg",
   },
   notice:
     "Demostración interna · Contenido pendiente de validación · No publicar",

@@ -1,0 +1,18 @@
+{
+  "asset": "/demo/vicafoods-reference/ladrillo-referencial.jpg",
+  "alt": "Textura referencial de ladrillo antiguo",
+  "provider": "Pexels",
+  "photoId": "4913770",
+  "author": "Julia Filirovska",
+  "page": "https://www.pexels.com/photo/old-brick-wall-with-cement-between-rows-4913770/",
+  "license": "Pexels License",
+  "licenseURL": "https://www.pexels.com/license/",
+  "downloadURL": "https://images.pexels.com/photos/4913770/pexels-photo-4913770.jpeg?auto=compress&cs=tinysrgb&w=1600",
+  "sha256": "a5bff4c14fa04ad9464648dc28d9d5776fd3a78f45bb8ddea687ddee3cb9f9a7",
+  "width": 1600,
+  "height": 1067,
+  "verifiedDate": "2026-10-13",
+  "usage": "Referential stock texture; does not depict Vicafoods premises.",
+  "inspection": "Weathered warm red and orange brick masonry close-up, no people, logos, or building facade visible. Downloaded provider rendition without image edits.",
+  "downloadSha256": "2bf88850390d11e86fd4d719c3c2de75c59c1eb3519014bc77714f5308748207"
+}

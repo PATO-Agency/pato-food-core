@@ -16,7 +16,12 @@ export interface SiteConfiguration {
   publicUrl?: string;
   /** Keep the default generic until the client's business type is approved. */
   schemaType?: "FoodEstablishment" | "Restaurant";
-  theme: { primary: string };
+  theme: {
+    primary: string;
+    background?: string;
+    foreground?: string;
+    rusticTexture?: string;
+  };
 }
 const days = [
   "Domingo",
@@ -124,6 +129,11 @@ export function adaptContent(
         ? content.whatsappConversion.destinationE164
         : undefined,
     },
-    theme: { accent: config.theme.primary },
+    theme: {
+      accent: config.theme.primary,
+      background: config.theme.background,
+      foreground: config.theme.foreground,
+      rusticTexture: config.theme.rusticTexture,
+    },
   };
 }

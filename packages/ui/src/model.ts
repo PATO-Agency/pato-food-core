@@ -55,5 +55,10 @@ export interface LandingContent {
     intent: "order" | "reservation" | "inquiry" | "event";
     placements: ConversionLocation[];
   };
-  theme?: { accent?: string; background?: string; foreground?: string };
+  theme?: {
+    accent?: string;
+    background?: string;
+    foreground?: string;
+    rusticTexture?: string;
+  };
 }
