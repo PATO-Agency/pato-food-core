@@ -20,7 +20,7 @@ export interface SiteConfiguration {
     primary: string;
     background?: string;
     foreground?: string;
-    rusticTexture?: string;
+    rusticPattern?: "brick";
   };
 }
 const days = [
@@ -133,7 +133,7 @@ export function adaptContent(
       accent: config.theme.primary,
       background: config.theme.background,
       foreground: config.theme.foreground,
-      rusticTexture: config.theme.rusticTexture,
+      rusticPattern: config.theme.rusticPattern,
     },
   };
 }

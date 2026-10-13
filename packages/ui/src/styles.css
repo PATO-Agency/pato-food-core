@@ -1107,11 +1107,35 @@ button:focus-visible {
   }
 }
 
-/* Vicafoods: dark storefront, oven gold and subtle sourced masonry. */
+/* Vicafoods: dark storefront, oven gold and understated CSS masonry. */
 .food-site {
   --surface: color-mix(in srgb, var(--ink) 3.5%, var(--paper));
   --line: color-mix(in srgb, var(--accent) 24%, var(--paper));
   --muted: color-mix(in srgb, var(--ink) 72%, var(--paper));
+}
+.food-site[data-background-pattern="brick"] {
+  --brick-joint: color-mix(in srgb, var(--accent) 8%, var(--paper));
+  /* Two half-height joints offset by half a brick, plus horizontal courses. */
+  background-image:
+    conic-gradient(
+      from 0deg at 1px 50%,
+      transparent 270deg,
+      var(--brick-joint) 0
+    ),
+    conic-gradient(
+      from 0deg at 1px 50%,
+      transparent 270deg,
+      var(--brick-joint) 0
+    ),
+    linear-gradient(var(--brick-joint) 1px, transparent 1px);
+  background-size:
+    160px 96px,
+    160px 96px,
+    160px 48px;
+  background-position:
+    0 0,
+    80px 48px,
+    0 0;
 }
 .food-site .demo-banner {
   background: color-mix(in srgb, var(--accent) 9%, var(--paper));
@@ -1201,23 +1225,9 @@ button:focus-visible {
   line-height: 1.65;
 }
 .food-site .business-lines {
-  position: relative;
-  isolation: isolate;
   padding: 1.4rem 1.6rem;
-  border: 0;
-  background: color-mix(in srgb, #6b3624 14%, var(--paper));
-}
-.food-site .business-lines::before,
-.food-site .visit-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.12;
-  background-image: var(--rustic-texture);
-  background-size: cover;
-  background-position: center;
-  pointer-events: none;
+  border-block: 1px solid var(--line);
+  background: transparent;
 }
 .food-site .business-lines a {
   font-family: var(--font-display);
@@ -1267,14 +1277,9 @@ button:focus-visible {
   border-radius: 0.45rem;
 }
 .food-site .visit-section {
-  position: relative;
-  isolation: isolate;
   padding: clamp(2rem, 5vw, 4rem);
-  background: color-mix(in srgb, #6b3624 10%, var(--paper));
+  background: transparent;
   gap: clamp(2rem, 7vw, 6rem);
-}
-.food-site .visit-section::before {
-  opacity: 0.07;
 }
 .food-site .hours-panel {
   border-color: var(--accent);

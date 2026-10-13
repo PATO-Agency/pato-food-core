@@ -20,7 +20,7 @@ Five categories and seventeen products, prices and units transcribed from suppli
 
 ## Brand Commitments
 
-The owner specifies Vicafoods' black background, white lettering, strong yellow/gold accents and rustic old oven brick. Brick stays subtle in selected sections, confirmed on 13 October 2026. Requested interactions: cursor-following product photo, improved category navigation, balanced hero, GSAP scroll and text reveals.
+The owner specifies Vicafoods' black background, white lettering, strong yellow/gold accents and rustic old oven brick. A quiet brick pattern is drawn with CSS directly in the page background, without a wall photograph, confirmed on 13 October 2026. Requested interactions: cursor-following product photo, improved category navigation, balanced hero, GSAP scroll and text reveals.
 
 ## Evidence on Hand
 

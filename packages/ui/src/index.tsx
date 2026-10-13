@@ -141,12 +141,12 @@ export function FoodLanding({
     "--accent": c.theme?.accent,
     "--paper": c.theme?.background,
     "--ink": c.theme?.foreground,
-    "--rustic-texture": c.theme?.rusticTexture
-      ? `url("${c.theme.rusticTexture}")`
-      : undefined,
   } as CSSProperties;
   return (
-    <LandingMotion style={style}>
+    <LandingMotion
+      style={style}
+      data-background-pattern={c.theme?.rusticPattern}
+    >
       <a className="skip-link" href="#main">
         Saltar al contenido
       </a>

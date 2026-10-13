@@ -59,6 +59,6 @@ export interface LandingContent {
     accent?: string;
     background?: string;
     foreground?: string;
-    rusticTexture?: string;
+    rusticPattern?: "brick";
   };
 }

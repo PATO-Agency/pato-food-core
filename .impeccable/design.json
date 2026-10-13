@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-13T22:17:00.419Z",
+  "generatedAt": "2026-10-13T22:27:43.638Z",
   "title": "Design System: Vicafoods",
   "extensions": {
     "colorMeta": {
@@ -88,20 +88,6 @@
           "oklch(95% 0.0042 84.59)"
         ]
       },
-      "rustic-brick": {
-        "role": "secondary",
-        "displayName": "Ladrillo oscuro",
-        "tonalRamp": [
-          "oklch(15% 0.0809 39.31)",
-          "oklch(27% 0.0809 39.31)",
-          "oklch(38% 0.0809 39.31)",
-          "oklch(49% 0.0809 39.31)",
-          "oklch(61% 0.0809 39.31)",
-          "oklch(72% 0.0809 39.31)",
-          "oklch(84% 0.0809 39.31)",
-          "oklch(95% 0.0809 39.31)"
-        ]
-      },
       "button-ink": {
         "role": "neutral",
         "displayName": "Tinta para botón",
@@ -157,6 +143,10 @@
           "oklch(84% 0.0000 89.88)",
           "oklch(95% 0.0000 89.88)"
         ]
+      },
+      "brick-joint": {
+        "role": "neutral",
+        "displayName": "Junta de ladrillo"
       }
     },
     "typographyMeta": {
@@ -334,12 +324,12 @@
   ],
   "narrative": {
     "northStar": "Negro, blanco y dorado; ladrillo sutil",
-    "overview": "La dirección confirmada combina un fondo negro cálido, letras blancas y dorado de horno. La tipografía condensada da presencia a la marca y a los títulos; Manrope mantiene legibles las descripciones, las categorías y los precios. El catálogo combina espacios amplios entre secciones con filas compactas para comparar platos y presentaciones.\n\nLas fotografías aportan el color y el detalle del producto. El ladrillo de horno antiguo aparece como textura de baja intensidad en secciones seleccionadas, con el texto siempre por encima. Los movimientos de entrada, las respuestas de los enlaces y la fotografía que sigue al cursor acompañan la exploración. Por decisión expresa del usuario, las animaciones permanecen activas también con `prefers-reduced-motion: reduce`; el HTML, las acciones nativas y el espacio reservado de las imágenes siguen disponibles si JavaScript o su controlador fallan.",
+    "overview": "La dirección confirmada combina un fondo negro cálido, letras blancas y dorado de horno. La tipografía condensada da presencia a la marca y a los títulos; Manrope mantiene legibles las descripciones, las categorías y los precios. El catálogo combina espacios amplios entre secciones con filas compactas para comparar platos y presentaciones.\n\nLas fotografías aportan el color y el detalle del producto. El ladrillo aparece como un patrón geométrico de muy bajo contraste, dibujado con CSS directamente en el fondo de la página. Las juntas alternan entre filas; no se usa una fotografía de pared. Los movimientos de entrada, las respuestas de los enlaces y la fotografía que sigue al cursor acompañan la exploración. Por decisión expresa del usuario, las animaciones permanecen activas también con `prefers-reduced-motion: reduce`; el HTML, las acciones nativas y el espacio reservado de las imágenes siguen disponibles si JavaScript o su controlador fallan.",
     "keyCharacteristics": [
       "Fondo oscuro cálido, texto blanco y dorado en acciones, precios y detalles de marca.",
       "Títulos condensados en mayúsculas y texto de lectura en Manrope.",
       "Fotografía protagonista con encuadres reservados y esquinas discretas.",
-      "Ladrillo sutil en superficies seleccionadas.",
+      "Patrón de ladrillo sutil integrado en el fondo.",
       "Exploración fotográfica con ratón, teclado y tacto; animaciones activas por defecto."
     ],
     "rules": [],
@@ -349,10 +339,10 @@
       "**Do** reservar las proporciones fotográficas y mantener identificadas las imágenes referenciales.",
       "**Do** ofrecer enlaces y desplegables nativos, foco visible y áreas de interacción de al menos 44px en el catálogo.",
       "**Do** mantener las animaciones activas también con movimiento reducido emulado y verificar que el contenido siga disponible si falla el controlador.",
-      "**Do** mantener el ladrillo de baja intensidad en secciones seleccionadas y comprobar la lectura encima de la textura."
+      "**Do** mantener el patrón CSS de ladrillo de muy bajo contraste y comprobar la lectura sobre el fondo."
     ],
     "donts": [
-      "**Don't** convertir la textura de ladrillo en el fondo dominante de todas las secciones.",
+      "**Don't** sustituir el patrón CSS por una fotografía de pared ni aumentar sus juntas hasta convertirlas en el foco de la página.",
       "**Don't** usar los valores claros iniciales de la hoja compartida como si fueran el tema efectivo de Vicafoods.",
       "**Don't** ocultar contenido esperando a que se inicialicen las animaciones.",
       "**Don't** hacer que la vista de cursor sea la única manera de inspeccionar una fotografía.",

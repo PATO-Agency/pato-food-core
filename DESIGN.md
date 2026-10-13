@@ -8,7 +8,7 @@ colors:
   muted: "color-mix(in srgb, #f8f4eb 72%, #11100e)"
   line: "color-mix(in srgb, #e5b83d 24%, #11100e)"
   surface: "color-mix(in srgb, #f8f4eb 3.5%, #11100e)"
-  rustic-brick: "#6b3624"
+  brick-joint: "color-mix(in srgb, #e5b83d 8%, #11100e)"
   button-ink: "#23251f"
   gold-panel-ink: "#17130c"
   reference-label: "#11100ee8"
@@ -108,14 +108,14 @@ components:
 
 La dirección confirmada combina un fondo negro cálido, letras blancas y dorado de horno. La tipografía condensada da presencia a la marca y a los títulos; Manrope mantiene legibles las descripciones, las categorías y los precios. El catálogo combina espacios amplios entre secciones con filas compactas para comparar platos y presentaciones.
 
-Las fotografías aportan el color y el detalle del producto. El ladrillo de horno antiguo aparece como textura de baja intensidad en secciones seleccionadas, con el texto siempre por encima. Los movimientos de entrada, las respuestas de los enlaces y la fotografía que sigue al cursor acompañan la exploración. Por decisión expresa del usuario, las animaciones permanecen activas también con `prefers-reduced-motion: reduce`; el HTML, las acciones nativas y el espacio reservado de las imágenes siguen disponibles si JavaScript o su controlador fallan.
+Las fotografías aportan el color y el detalle del producto. El ladrillo aparece como un patrón geométrico de muy bajo contraste, dibujado con CSS directamente en el fondo de la página. Las juntas alternan entre filas; no se usa una fotografía de pared. Los movimientos de entrada, las respuestas de los enlaces y la fotografía que sigue al cursor acompañan la exploración. Por decisión expresa del usuario, las animaciones permanecen activas también con `prefers-reduced-motion: reduce`; el HTML, las acciones nativas y el espacio reservado de las imágenes siguen disponibles si JavaScript o su controlador fallan.
 
 **Key Characteristics:**
 
 - Fondo oscuro cálido, texto blanco y dorado en acciones, precios y detalles de marca.
 - Títulos condensados en mayúsculas y texto de lectura en Manrope.
 - Fotografía protagonista con encuadres reservados y esquinas discretas.
-- Ladrillo sutil en superficies seleccionadas.
+- Patrón de ladrillo sutil integrado en el fondo.
 - Exploración fotográfica con ratón, teclado y tacto; animaciones activas por defecto.
 
 Esta documentación captura el sistema implementado el 13 de octubre de 2026. La composición de la portada vive en `docs/design/vicafoods-home-2026-10-13.md`; la validación del contenido y el estado del canal de pedidos viven en `PRODUCT.md` y en la configuración del contenido. Esos estados operativos no definen el diseño de futuras superficies.
@@ -128,16 +128,13 @@ La paleta se organiza alrededor del dorado y de neutrales cálidos; los valores 
 
 - **Dorado de horno (`accent`)**: acciones principales, precios, subtítulos de marca, categoría actual y foco. También produce las líneas cálidas al mezclarse con el fondo.
 
-### Secondary
-
-- **Ladrillo oscuro (`rustic-brick`)**: matiz de las superficies que acompañan la textura. La franja de líneas del negocio lo mezcla al 14% con el fondo; la sección de visita, al 10%.
-
 ### Neutral
 
 - **Negro cálido (`paper`)**: fondo principal. El nombre procede de la variable del componente compartido; en este tema representa el fondo oscuro.
 - **Blanco cálido (`ink`)**: títulos y texto principal. En este tema representa el primer plano claro.
 - **Blanco atenuado (`muted`)**: descripciones, información secundaria y enlaces de fotografía.
 - **Línea dorada tenue (`line`)**: separadores y bordes del catálogo.
+- **Junta de ladrillo (`brick-joint`)**: líneas casi negras para insinuar las hiladas sin competir con la lectura.
 - **Superficie oscura elevada por tono (`surface`)**: fondo del menú y soportes de imagen.
 - **Tinta para botón (`button-ink`)** y **tinta para panel dorado (`gold-panel-ink`)**: texto oscuro sobre superficies doradas.
 - **Etiqueta referencial (`reference-label`, `reference-white`)**: soporte oscuro translúcido y texto blanco sobre fotografías.
@@ -186,7 +183,7 @@ El sistema usa principalmente contraste tonal, fotografía y líneas finas. Las 
 - **Vista de cursor:** `0 16px 48px rgb(0 0 0 / 35%)`; separación de una fotografía transitoria sobre las filas del catálogo.
 - **Acción flotante:** `drop-shadow(0 10px 20px rgb(0 0 0 / 18%))`; soporte de la acción cuando el contenido habilita esa ubicación.
 
-La textura rústica usa una capa sin interacción, opacidad 0.12 en las líneas del negocio y 0.07 en la visita. Evitar aumentar su contraste hasta competir con nombres, precios o enlaces.
+El patrón rústico forma parte del fondo, con juntas de 1px y ladrillos de 160 × 48px. Dos gradientes cónicos de 160 × 96px desplazan las juntas verticales 80px entre filas; un gradiente lineal dibuja las horizontales. La mezcla `brick-joint` mantiene muy poco contraste. La franja de líneas del negocio y la visita son transparentes, por lo que el fondo se percibe continuo. No necesita imágenes, capas flotantes ni animación propia.
 
 ## Shapes
 
@@ -237,11 +234,11 @@ Las entradas GSAP animan líneas de título y bloques desde opacidad 0.65 y desp
 - **Do** reservar las proporciones fotográficas y mantener identificadas las imágenes referenciales.
 - **Do** ofrecer enlaces y desplegables nativos, foco visible y áreas de interacción de al menos 44px en el catálogo.
 - **Do** mantener las animaciones activas también con movimiento reducido emulado y verificar que el contenido siga disponible si falla el controlador.
-- **Do** mantener el ladrillo de baja intensidad en secciones seleccionadas y comprobar la lectura encima de la textura.
+- **Do** mantener el patrón CSS de ladrillo de muy bajo contraste y comprobar la lectura sobre el fondo.
 
 ### Don't:
 
-- **Don't** convertir la textura de ladrillo en el fondo dominante de todas las secciones.
+- **Don't** sustituir el patrón CSS por una fotografía de pared ni aumentar sus juntas hasta convertirlas en el foco de la página.
 - **Don't** usar los valores claros iniciales de la hoja compartida como si fueran el tema efectivo de Vicafoods.
 - **Don't** ocultar contenido esperando a que se inicialicen las animaciones.
 - **Don't** hacer que la vista de cursor sea la única manera de inspeccionar una fotografía.
