@@ -14,6 +14,19 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --focus-ring: #0067c5;
 }
+.reference-image-label {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 1;
+  padding: 0.25rem 0.55rem;
+  border-radius: 0.2rem;
+  background: #23251fe6;
+  color: #fff;
+  font-size: 0.65rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+}
 * {
   box-sizing: border-box;
 }

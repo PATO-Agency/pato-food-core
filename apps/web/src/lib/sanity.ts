@@ -3,12 +3,16 @@ import { createClient } from "@sanity/client";
 import { unstable_cache } from "next/cache";
 import {
   assertProductionContent,
+  internalVicafoodsDemoSiteQuery,
   parseSiteContent,
   previewSiteQuery,
   publishedSiteQuery,
   type SiteContent,
 } from "@pato-food/content-contract";
-import { readSanityConfiguration } from "./sanity-configuration";
+import {
+  readInternalDemoNamespace,
+  readSanityConfiguration,
+} from "./sanity-configuration";
 
 const CACHE_TAGS = [
   "business",
@@ -30,6 +34,11 @@ function syntheticPreview(drafts: unknown, published: unknown): unknown {
   const singletons = record(published);
   content.business = singletons.business;
   content.whatsappConversion = singletons.whatsappConversion;
+  return isolatedCollections(content, "pato-");
+}
+
+function isolatedCollections(input: unknown, prefix: string): unknown {
+  const content = { ...record(input) };
   const publishedId = (id: string) => id.replace(/^drafts\./, "");
   for (const collection of [
     "menuCategories",
@@ -47,7 +56,7 @@ function syntheticPreview(drafts: unknown, published: unknown): unknown {
       const row = record(value);
       if (typeof row.id !== "string") continue;
       const id = publishedId(row.id);
-      if (!id.startsWith("pato-")) continue;
+      if (!id.startsWith(prefix)) continue;
       // The drafts perspective already overlays published documents. Handle raw
       // draft IDs defensively as well, retaining the draft regardless of order.
       if (!own.has(id) || row.id.startsWith("drafts.")) {
@@ -66,6 +75,7 @@ function syntheticPreview(drafts: unknown, published: unknown): unknown {
 }
 
 async function fetchSiteContent(preview: boolean): Promise<SiteContent> {
+  const demoNamespace = readInternalDemoNamespace(process.env);
   const { projectId, dataset, token } = readSanityConfiguration(process.env);
   const client = createClient({
     projectId,
@@ -79,11 +89,17 @@ async function fetchSiteContent(preview: boolean): Promise<SiteContent> {
   let result: unknown;
   try {
     result = await client.fetch(
-      preview ? previewSiteQuery : publishedSiteQuery,
+      demoNamespace
+        ? internalVicafoodsDemoSiteQuery
+        : preview
+          ? previewSiteQuery
+          : publishedSiteQuery,
       {},
       preview ? { cache: "no-store", tag: "preview" } : { tag: "published" },
     );
-    if (preview && process.env.PATO_PREVIEW_SCOPE === "synthetic") {
+    if (demoNamespace) {
+      result = isolatedCollections(result, demoNamespace);
+    } else if (preview && process.env.PATO_PREVIEW_SCOPE === "synthetic") {
       const published = await client.fetch(
         publishedSiteQuery,
         {},
@@ -101,24 +117,32 @@ async function fetchSiteContent(preview: boolean): Promise<SiteContent> {
     throw new Error("CMS content is temporarily unavailable");
   }
   const content = parseSiteContent(result);
-  if (!preview) assertProductionContent(content);
+  if (!preview && !demoNamespace) assertProductionContent(content);
   return content;
 }
 
 const fetchPublishedContent = unstable_cache(
   () => fetchSiteContent(false),
   [
-    "pato-food-sanity-site-v1",
+    "pato-food-sanity-site-v2",
     process.env.SANITY_PROJECT_ID || "unconfigured-project",
     process.env.SANITY_DATASET || "unconfigured-dataset",
+    process.env.PATO_DEMO_SITE || "normal-editorial-site",
+    process.env.PATO_DEMO_SITE?.trim() === "vicafoods"
+      ? "pato-demo-vicafoods-"
+      : "standard-singletons",
+    process.env.PATO_SITE_VISIBILITY || "unconfigured-visibility",
+    process.env.VERCEL_ENV || "local",
   ],
   { revalidate: 300, tags: CACHE_TAGS },
 );
 
-export function getSanitySiteContent({
+export async function getSanitySiteContent({
   preview = false,
 }: {
   preview?: boolean;
 } = {}): Promise<SiteContent> {
+  // Reject unsafe configuration even if a cached demo result already exists.
+  readInternalDemoNamespace(process.env);
   return preview ? fetchSiteContent(true) : fetchPublishedContent();
 }

@@ -82,6 +82,9 @@ export function EditorialImage({
           <small>Fotografía pendiente de aprobación</small>
         </div>
       )}
+      {image?.alt.startsWith("Imagen referencial:") && (
+        <span className="reference-image-label">Imagen referencial</span>
+      )}
     </div>
   );
 }

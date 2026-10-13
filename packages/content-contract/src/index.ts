@@ -1,5 +1,9 @@
 import { z } from "zod";
-export { previewSiteQuery, publishedSiteQuery } from "./queries.ts";
+export {
+  previewSiteQuery,
+  publishedSiteQuery,
+  internalVicafoodsDemoSiteQuery,
+} from "./queries.ts";
 
 export const contentStatusSchema = z.enum([
   "demo",

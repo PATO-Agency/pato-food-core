@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { vicafoodsContent } from "@pato-food/vicafoods";
+import { internalVicafoodsDemoSiteQuery } from "@pato-food/content-contract";
 
 const { fetch, createClient } = vi.hoisted(() => ({
   fetch: vi.fn(),
@@ -163,6 +164,118 @@ describe("Sanity preview isolation", () => {
       .mockRejectedValueOnce(new Error("Authorization: secret"));
     await expect(getSanitySiteContent({ preview: true })).rejects.toThrow(
       "CMS content is temporarily unavailable",
+    );
+  });
+});
+
+describe("internal Vicafoods demo namespace", () => {
+  const prefix = "pato-demo-vicafoods-";
+  function demo() {
+    const content = structuredClone(vicafoodsContent);
+    for (const key of [
+      "menuCategories",
+      "menuItems",
+      "galleryImages",
+      "promotions",
+      "faqs",
+      "testimonials",
+    ] as const) {
+      for (const row of content[key]) row.id = `${prefix}${row.id}`;
+    }
+    for (const item of content.menuItems)
+      item.categoryId = `${prefix}${item.categoryId}`;
+    return content;
+  }
+  beforeEach(() => {
+    fetch.mockReset();
+    createClient.mockReset().mockReturnValue({ fetch });
+    vi.stubEnv("SANITY_PROJECT_ID", "testproject");
+    vi.stubEnv("SANITY_DATASET", "sandbox");
+    vi.stubEnv("SANITY_READ_TOKEN", "test-read-token-000000000000");
+    vi.stubEnv("PATO_DEMO_SITE", "vicafoods");
+    vi.stubEnv("PATO_SITE_VISIBILITY", "internal");
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.stubEnv("PATO_PREVIEW_SCOPE", "synthetic");
+  });
+  afterEach(() => vi.unstubAllEnvs());
+
+  it.each([false, true])(
+    "reads only demo content without inventing business approval (preview=%s)",
+    async (preview) => {
+      const content = demo();
+      fetch.mockResolvedValueOnce(content);
+      const result = await getSanitySiteContent({ preview });
+      expect(result).toEqual(content);
+      expect(result.business.contentStatus).toBe("pendingValidation");
+      expect(result.business.approvedAt).toBeUndefined();
+      expect(fetch).toHaveBeenCalledExactlyOnceWith(
+        internalVicafoodsDemoSiteQuery,
+        {},
+        preview ? { cache: "no-store", tag: "preview" } : { tag: "published" },
+      );
+      expect(createClient.mock.calls[0]?.[0]).toMatchObject({
+        perspective: preview ? "drafts" : "published",
+      });
+    },
+  );
+
+  it.each([
+    ["PATO_SITE_VISIBILITY", "public"],
+    ["PATO_SITE_VISIBILITY", undefined],
+    ["SANITY_DATASET", "production"],
+    ["VERCEL_ENV", "production"],
+    ["PATO_DEMO_SITE", "unknown"],
+  ])(
+    "rejects an unsafe demo configuration %s=%s before querying",
+    async (key, value) => {
+      vi.stubEnv(key, value);
+      await expect(getSanitySiteContent()).rejects.toThrow();
+      expect(createClient).not.toHaveBeenCalled();
+      expect(fetch).not.toHaveBeenCalled();
+    },
+  );
+
+  it("normalizes draft IDs, prefers drafts and discards unrelated collection rows", async () => {
+    const content = demo();
+    const item = content.menuItems[0]!;
+    content.menuItems.push({
+      ...item,
+      id: `drafts.${item.id}`,
+      categoryId: `drafts.${item.categoryId}`,
+      name: "Cambio desde Studio",
+    });
+    content.menuItems.push({ ...item, id: "original-unrelated" });
+    content.menuCategories.push({
+      ...content.menuCategories[0]!,
+      id: "original-category",
+    });
+    fetch.mockResolvedValueOnce(content);
+    const result = await getSanitySiteContent({ preview: true });
+    expect(result.menuItems).toHaveLength(vicafoodsContent.menuItems.length);
+    expect(result.menuCategories).toHaveLength(
+      vicafoodsContent.menuCategories.length,
+    );
+    expect(result.menuItems[0]).toMatchObject({
+      id: item.id,
+      categoryId: item.categoryId,
+      name: "Cambio desde Studio",
+    });
+  });
+
+  it("rejects a dangling reference instead of rendering another namespace category", async () => {
+    const content = demo();
+    content.menuItems[0]!.categoryId = "original-category";
+    fetch.mockResolvedValueOnce(content);
+    await expect(getSanitySiteContent({ preview: true })).rejects.toThrow(
+      "Missing category reference",
+    );
+  });
+
+  it("still requires real approval for published content when demo mode is absent", async () => {
+    vi.stubEnv("PATO_DEMO_SITE", undefined);
+    fetch.mockResolvedValueOnce(vicafoodsContent);
+    await expect(getSanitySiteContent()).rejects.toThrow(
+      "Production requires approved content and approval timestamps",
     );
   });
 });

@@ -6,7 +6,13 @@ const approved =
   'contentStatus == "approved" && defined(approvedAt) && !(_id in path("drafts.**"))';
 const previewable = '!(_id in path("versions.**"))';
 
-const siteQuery = (filter: string, singletonFilter: string) => `{
+const approvedCategory =
+  'defined(category->_id) && category->contentStatus == "approved" && defined(category->approvedAt)';
+const siteQuery = (
+  filter: string,
+  singletonFilter: string,
+  categoryFilter = approvedCategory,
+) => `{
   "business": *[_type == "business" && ${singletonFilter} && ${filter}] | order(_updatedAt desc)[0]{
     ${editorial}, displayName, legalName, tagline, description, businessLines,
     "logo": select(defined(logo.asset) => logo{${image}}),
@@ -21,7 +27,7 @@ const siteQuery = (filter: string, singletonFilter: string) => `{
   },
   "whatsappConversion": *[_type == "whatsappConversion" && ${singletonFilter} && ${filter}] | order(_updatedAt desc)[0]{${editorial}, enabled, intent, destinationE164, ctaLabel, prefilledMessage, placements, fallbackLabel},
   "menuCategories": *[_type == "menuCategory" && ${filter}] | order(sortOrder asc){${editorial}, "id": _id, name, "slug": slug.current, description, groupLabel, sortOrder, visible},
-  "menuItems": *[_type == "menuItem" && ${filter} && defined(category->_id) && category->contentStatus == "approved" && defined(category->approvedAt)] | order(sortOrder asc){${editorial}, "id": _id, name, "slug": slug.current, "categoryId": category._ref, description, pricingMode, "priceOptions": coalesce(priceOptions[]{label, amount, currency, billingUnit, unitQuantity, netContent{quantity, unit, count}}, []), "image": select(defined(image.asset) => image{${image}}), "badges": coalesce(badges, []), featured, availability, sortOrder},
+  "menuItems": *[_type == "menuItem" && ${filter} && ${categoryFilter}] | order(sortOrder asc){${editorial}, "id": _id, name, "slug": slug.current, "categoryId": category._ref, description, pricingMode, "priceOptions": coalesce(priceOptions[]{label, amount, currency, billingUnit, unitQuantity, netContent{quantity, unit, count}}, []), "image": select(defined(image.asset) => image{${image}}), "badges": coalesce(badges, []), featured, availability, sortOrder},
   "galleryImages": *[_type == "galleryImage" && ${filter}] | order(sortOrder asc){${editorial}, "id": _id, image{${image}}, caption, category, credit, sortOrder, visible},
   "promotions": *[_type == "promotion" && ${filter}] | order(startsAt desc){${editorial}, "id": _id, title, text, "image": select(defined(image.asset) => image{${image}}), startsAt, endsAt, active, campaignId, useWhatsappCta},
   "faqs": *[_type == "faq" && ${filter}] | order(sortOrder asc){${editorial}, "id": _id, question, answer, sortOrder, visible},
@@ -35,7 +41,16 @@ export const publishedSiteQuery = siteQuery(
 export const previewSiteQuery = siteQuery(
   previewable,
   '_id in ["business", "drafts.business", "whatsappConversion", "drafts.whatsappConversion"]',
-).replace(
-  'defined(category->_id) && category->contentStatus == "approved" && defined(category->approvedAt)',
   "defined(category->_id)",
+);
+
+// This is intentionally independent of approval filters: publishing a sandbox
+// demonstration does not represent approval of the client's prices or content.
+// Callers must enforce the internal sandbox environment before using it.
+const demoNamespace =
+  '(string::startsWith(_id, "pato-demo-vicafoods-") || string::startsWith(_id, "drafts.pato-demo-vicafoods-"))';
+export const internalVicafoodsDemoSiteQuery = siteQuery(
+  `${previewable} && ${demoNamespace}`,
+  '_id in ["pato-demo-vicafoods-business", "drafts.pato-demo-vicafoods-business", "pato-demo-vicafoods-whatsappConversion", "drafts.pato-demo-vicafoods-whatsappConversion"]',
+  'defined(category->_id) && (string::startsWith(category->_id, "pato-demo-vicafoods-") || string::startsWith(category->_id, "drafts.pato-demo-vicafoods-"))',
 );
