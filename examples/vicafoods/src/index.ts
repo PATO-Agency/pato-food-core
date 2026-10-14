@@ -1,5 +1,6 @@
 import { siteContentSchema } from "@pato-food/content-contract";
 import { marketAdditions, marketCategories, marketPriceSource } from "./market";
+import { moments } from "./moments";
 
 export const vicafoodsConfig = {
   siteKey: "vicafoods-demo",
@@ -49,7 +50,7 @@ const categories = [
   name,
   groupLabel,
   sortOrder,
-  visible: true,
+  visible: id !== "market",
   catalogSection: id === "market" ? "market" : "menu",
 }));
 const catalog: [string, string, string, number, string, string?][] = [
@@ -248,7 +249,7 @@ export const vicafoodsContent = siteContentSchema.parse({
       id: "market-picanha",
       slug: "market-picanha",
       name: "Picanha nacional",
-      categoryId: "market",
+      categoryId: "market-cuts",
       pricingMode: "fixed",
       priceOptions: [
         {
@@ -269,7 +270,7 @@ export const vicafoodsContent = siteContentSchema.parse({
       id: "market-pack-cerdo",
       slug: "market-pack-cerdo",
       name: "Hamburguesa de cerdo",
-      categoryId: "market",
+      categoryId: "market-charcuteria",
       pricingMode: "fixed",
       priceOptions: [
         {
@@ -299,36 +300,22 @@ export const vicafoodsContent = siteContentSchema.parse({
       sortOrder: 22,
     },
   ],
-  galleryImages: [
-    {
-      ...provenance,
-      sourceRef: "S10",
-      id: "gallery-choripan",
-      image: {
-        src: "/demo/vicafoods/choripan-papas.png",
-        alt: "Choripán con papas y bebida",
-        rightsConfirmed: false,
-      },
-      category: "product",
-      credit: "Activo suministrado; derechos pendientes",
-      sortOrder: 0,
-      visible: true,
+  galleryImages: moments.map((moment, sortOrder) => ({
+    ...provenance,
+    sourceRef: moment.sourceUrl,
+    id: `gallery-${moment.key}`,
+    image: {
+      src: `/demo/vicafoods-moments/${moment.key}.jpg`,
+      alt: moment.alt,
+      rightsConfirmed: true,
     },
-    {
-      ...provenance,
-      sourceRef: "S11",
-      id: "gallery-burger",
-      image: {
-        src: "/demo/vicafoods/hamburguesa-vicafoods.png",
-        alt: "Hamburguesa con pan marcado VICAFOODS",
-        rightsConfirmed: false,
-      },
-      category: "product",
-      credit: "Activo suministrado; derechos pendientes",
-      sortOrder: 1,
-      visible: true,
-    },
-  ],
+    category: "event",
+    caption:
+      "Fotografía referencial · No corresponde a un evento de Vicafoods.",
+    credit: `${moment.photographer} / Pexels`,
+    sortOrder,
+    visible: true,
+  })),
   promotions: [],
   faqs: [],
   testimonials: [],

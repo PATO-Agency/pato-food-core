@@ -1,0 +1,53 @@
+{
+  "purpose": "FotografÃ­as referenciales de reuniones, no de eventos reales de Vicafoods",
+  "photos": [
+    {
+      "key": "reunion-parrilla",
+      "id": "6950716",
+      "file": "reunion-parrilla.jpg",
+      "photographer": "Kampus Production",
+      "sourceUrl": "https://www.pexels.com/photo/friends-standing-around-a-barbecue-grill-6950716/",
+      "downloadUrl": "https://images.pexels.com/photos/6950716/pexels-photo-6950716.jpeg?cs=srgb&dl=pexels-kampus-6950716.jpg&fm=jpg&w=1600",
+      "alt": "Amigos reunidos alrededor de una parrilla en un jardÃ­n; fotografÃ­a referencial",
+      "provider": "Pexels",
+      "licenseUrl": "https://www.pexels.com/license/",
+      "rightsConfirmed": true,
+      "observedAt": "2026-10-14T22:35:08.773Z",
+      "sha256": "941e732ee77f411a766dce2278d32fcdd53f6f7b9e38d49f87dc6a8716031b76",
+      "width": 1600,
+      "height": 1068
+    },
+    {
+      "key": "parrilla-amigos",
+      "id": "16617570",
+      "file": "parrilla-amigos.jpg",
+      "photographer": "Samuel Peter",
+      "sourceUrl": "https://www.pexels.com/photo/group-of-people-at-a-barbecue-16617570/",
+      "downloadUrl": "https://images.pexels.com/photos/16617570/pexels-photo-16617570.jpeg?cs=srgb&dl=pexels-newmanphotographs-16617570.jpg&fm=jpg&w=1600",
+      "alt": "Grupo de amigos compartiendo una parrillada al aire libre; fotografÃ­a referencial",
+      "provider": "Pexels",
+      "licenseUrl": "https://www.pexels.com/license/",
+      "rightsConfirmed": true,
+      "observedAt": "2026-10-14T22:35:09.303Z",
+      "sha256": "fac8792a1283a5baa1d64314942513107ed5b6d2603cefd1592c9ba6f6e43447",
+      "width": 1600,
+      "height": 1280
+    },
+    {
+      "key": "brindis-compartido",
+      "id": "27175849",
+      "file": "brindis-compartido.jpg",
+      "photographer": "Helena Lopes",
+      "sourceUrl": "https://www.pexels.com/photo/friends-enjoying-a-casual-outdoor-gathering-27175849/",
+      "downloadUrl": "https://images.pexels.com/photos/27175849/pexels-photo-27175849.jpeg?cs=srgb&dl=pexels-helenalopes-27175849.jpg&fm=jpg&w=1600",
+      "alt": "Amigos brindando junto a una mesa en una cocina al aire libre; fotografÃ­a referencial",
+      "provider": "Pexels",
+      "licenseUrl": "https://www.pexels.com/license/",
+      "rightsConfirmed": true,
+      "observedAt": "2026-10-14T22:35:09.873Z",
+      "sha256": "9ab1d65b83b17720b18fb37d3f57f17ebe14f076fece018c6d83ccde5495c2c2",
+      "width": 1600,
+      "height": 1067
+    }
+  ]
+}

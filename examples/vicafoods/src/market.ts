@@ -110,8 +110,8 @@ export const marketCategories = [
   },
   {
     id: "market-charcuteria",
-    name: "Chorizos artesanales",
+    name: "Chorizos y hamburguesas",
     description:
-      "Variedades para combinar · Precios por pack de 5 unidades de referencia.",
+      "Artesanales para compartir · Revisa las unidades de cada pack.",
   },
 ] as const;

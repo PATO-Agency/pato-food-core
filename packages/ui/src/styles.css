@@ -1276,6 +1276,9 @@ button:focus-visible {
 .food-site .gallery-image {
   border-radius: 0.45rem;
 }
+.food-site[data-background-pattern="brick"] .gallery-grid .gallery-image {
+  aspect-ratio: 3 / 2;
+}
 .food-site .visit-section {
   padding: clamp(2rem, 5vw, 4rem);
   background: transparent;
