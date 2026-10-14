@@ -56,7 +56,7 @@ export function EditorialImage({
   priority?: boolean;
 }) {
   const sizes = variant.includes("hero-image")
-    ? "(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 48vw, 42vw"
+    ? "(max-width: 400px) calc(100vw - 40px), (max-width: 760px) 90vw, (max-width: 1000px) 48vw, 42vw"
     : variant.includes("product-image")
       ? "(max-width: 680px) 34vw, (max-width: 1000px) 31vw, 400px"
       : variant.includes("promotion-image")
