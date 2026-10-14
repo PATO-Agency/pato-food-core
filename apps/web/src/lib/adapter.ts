@@ -56,6 +56,7 @@ export function adaptContent(
       name: c.name,
       description: c.description,
       group: c.groupLabel,
+      section: c.catalogSection ?? "menu",
     })),
     items: content.menuItems
       .filter(

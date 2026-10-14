@@ -3,13 +3,44 @@ import {
   buildWhatsAppUrl,
   whatsappConversionSchema,
   menuItemSchema,
+  menuCategorySchema,
   openingHoursSchema,
   promotionSchema,
   isPromotionActive,
   previewSiteQuery,
   publishedSiteQuery,
+  internalVicafoodsDemoSiteQuery,
 } from "./index";
 const metadata = { contentStatus: "demo", sourceRef: "synthetic test" };
+const category = {
+  ...metadata,
+  id: "category",
+  name: "Categoría",
+  slug: "categoria",
+  groupLabel: "Grupo",
+  sortOrder: 0,
+  visible: true,
+};
+it("accepts legacy categories and preserves only valid catalog sections", () => {
+  expect(menuCategorySchema.parse(category).catalogSection).toBeUndefined();
+  for (const catalogSection of ["menu", "market"]) {
+    expect(
+      menuCategorySchema.parse({ ...category, catalogSection }).catalogSection,
+    ).toBe(catalogSection);
+  }
+  expect(
+    menuCategorySchema.safeParse({ ...category, catalogSection: "kg" }).success,
+  ).toBe(false);
+});
+it("projects catalog classification through every content perspective", () => {
+  for (const query of [
+    previewSiteQuery,
+    publishedSiteQuery,
+    internalVicafoodsDemoSiteQuery,
+  ]) {
+    expect(query).toContain("groupLabel, catalogSection, sortOrder");
+  }
+});
 const whatsapp = {
   ...metadata,
   enabled: true,

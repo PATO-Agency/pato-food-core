@@ -1,4 +1,5 @@
 import { siteContentSchema } from "@pato-food/content-contract";
+import { marketAdditions, marketCategories, marketPriceSource } from "./market";
 
 export const vicafoodsConfig = {
   siteKey: "vicafoods-demo",
@@ -49,6 +50,7 @@ const categories = [
   groupLabel,
   sortOrder,
   visible: true,
+  catalogSection: id === "market" ? "market" : "menu",
 }));
 const catalog: [string, string, string, number, string, string?][] = [
   [
@@ -190,9 +192,56 @@ export const vicafoodsContent = siteContentSchema.parse({
     ],
     fallbackLabel: "Canal configurado · activación pendiente",
   },
-  menuCategories: categories,
+  menuCategories: [
+    ...categories,
+    ...marketCategories.map((category, index) => ({
+      ...provenance,
+      ...category,
+      slug: category.id,
+      groupLabel: "Carnicería & Market",
+      catalogSection: "market",
+      visible: true,
+      sortOrder: index,
+      sourceRef: "Ampliación referencial autorizada 14/10/2026",
+    })),
+  ],
   menuItems: [
     ...menuItems,
+    ...marketAdditions.map((item, index) => ({
+      ...provenance,
+      id: item.id,
+      slug: item.id,
+      name: item.name,
+      categoryId: item.categoryId,
+      description: item.description,
+      sourceRef: item.page
+        ? `Carta Carnicería Vicafoods 2024, p. ${item.page}; vigencia pendiente`
+        : "Precio ficticio de demostración autorizado; no es precio confirmado de Vicafoods",
+      sourceObservedAt: marketPriceSource.observedAt,
+      pricingMode: "fixed",
+      priceOptions: [
+        {
+          label:
+            item.categoryId === "market-charcuteria"
+              ? "Pack de 5 unidades de referencia"
+              : "Por kilogramo",
+          amount: item.amount,
+          currency: "PEN",
+          billingUnit:
+            item.categoryId === "market-charcuteria" ? "package" : "kg",
+          unitQuantity: 1,
+        },
+      ],
+      image: {
+        src: `/demo/vicafoods-market/${item.photo}.jpg`,
+        alt: `Imagen referencial: ${item.name}`,
+        rightsConfirmed: true,
+      },
+      badges: [],
+      featured: false,
+      availability: "available",
+      sortOrder: 30 + index,
+    })),
     {
       ...provenance,
       sourceRef: "S2",

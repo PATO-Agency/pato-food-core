@@ -59,9 +59,11 @@ export function EditorialImage({
     ? "(max-width: 400px) calc(100vw - 40px), (max-width: 760px) 90vw, (max-width: 1000px) 48vw, 42vw"
     : variant.includes("product-image")
       ? "(max-width: 680px) 34vw, (max-width: 1000px) 31vw, 400px"
-      : variant.includes("promotion-image")
-        ? "(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 40vw, 300px"
-        : "(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 48vw, 420px";
+      : variant.includes("market-image")
+        ? "(max-width: 560px) calc(100vw - 40px), (max-width: 900px) 44vw, 400px"
+        : variant.includes("promotion-image")
+          ? "(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 40vw, 300px"
+          : "(max-width: 680px) calc(100vw - 40px), (max-width: 1000px) 48vw, 420px";
   return (
     <div className={`editorial-image ${variant}`}>
       {image ? (
@@ -118,6 +120,16 @@ export function FoodLanding({
   preview?: boolean;
   previewExitAvailable?: boolean;
 }) {
+  const menuCategories = c.categories.filter(
+    (category) => category.section !== "market",
+  );
+  const marketCategories = c.categories.filter(
+    (category) => category.section === "market",
+  );
+  const menuIds = new Set(menuCategories.map((category) => category.id));
+  const marketIds = new Set(marketCategories.map((category) => category.id));
+  const menuItems = c.items.filter((item) => menuIds.has(item.categoryId));
+  const marketItems = c.items.filter((item) => marketIds.has(item.categoryId));
   const cta = (
     location: ConversionLocation,
     label?: string,
@@ -170,6 +182,9 @@ export function FoodLanding({
         </a>
         <nav aria-label="Principal">
           <a href="#carta">La carta</a>
+          {marketCategories.length > 0 && (
+            <a href="#market">Carnicería &amp; Market</a>
+          )}
           <a href="#experiencia">La experiencia</a>
           <a href="#visitanos">Visítanos</a>
         </nav>
@@ -217,7 +232,13 @@ export function FoodLanding({
             return (
               <a
                 key={line}
-                href={category ? `#category-${category.id}` : "#carta"}
+                href={
+                  category?.section === "market"
+                    ? "#market"
+                    : category
+                      ? `#category-${category.id}`
+                      : "#carta"
+                }
               >
                 <span>{line}</span>
                 <span aria-hidden="true">↗</span>
@@ -232,7 +253,7 @@ export function FoodLanding({
             text="Una selección de nuestra carta para inspirar tu próxima visita."
           />
           <div className="featured-grid">
-            {c.items
+            {menuItems
               .filter((item) => item.featured)
               .slice(0, 3)
               .map((item) => (
@@ -251,14 +272,99 @@ export function FoodLanding({
             <div className="section-top">
               <SectionHeading
                 eyebrow="LA CARTA"
-                title="A tu gusto, a tu manera."
-                text="Explora nuestras categorías. Cada precio indica su presentación o unidad de venta."
+                title={
+                  marketCategories.length
+                    ? "De la parrilla a tu mesa."
+                    : "A tu gusto, a tu manera."
+                }
+                text={
+                  marketCategories.length
+                    ? "Platos preparados para disfrutar. Hamburguesas, cortes a la parrilla y complementos, con su porción indicada."
+                    : "Explora nuestras categorías. Cada precio indica su presentación o unidad de venta."
+                }
               />
               {cta("menu")}
             </div>
-            <MenuCatalog categories={c.categories} items={c.items} />
+            <MenuCatalog categories={menuCategories} items={menuItems} />
           </div>
         </section>
+        {marketCategories.length > 0 && (
+          <section
+            className="market-section section-space"
+            id="market"
+            aria-labelledby="market-title"
+          >
+            <div className="section-shell">
+              <div className="market-intro">
+                <div className="section-heading">
+                  <h2 id="market-title">Carnicería &amp; Market</h2>
+                  <p className="section-heading__description">
+                    Tu próxima parrilla empieza aquí. Cortes y productos para
+                    preparar en casa, separados de nuestra carta de platos
+                    listos.
+                  </p>
+                </div>
+                <div className="market-buying-note">
+                  <p>Para preparar en casa</p>
+                  <span>
+                    Revisa el precio por kilo o pack de cada producto.
+                  </span>
+                  <a className="text-link" href="#carta">
+                    Ver platos preparados <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
+              {c.demo && (
+                <p className="market-reference-note">
+                  Catálogo de demostración · Precios y fotografías
+                  referenciales. Disponibilidad, peso y vigencia por confirmar.
+                </p>
+              )}
+              {marketCategories.map((category) => (
+                <section
+                  className="market-category"
+                  id={`category-${category.id}`}
+                  key={category.id}
+                  aria-labelledby={`category-heading-${category.id}`}
+                >
+                  <div className="market-category-heading">
+                    <h3 id={`category-heading-${category.id}`}>
+                      {category.name}
+                    </h3>
+                    {category.description && <p>{category.description}</p>}
+                  </div>
+                  <div className="market-grid">
+                    {marketItems
+                      .filter((item) => item.categoryId === category.id)
+                      .map((item) => (
+                        <article
+                          className={`market-product${item.unavailable ? " unavailable" : ""}`}
+                          key={item.id}
+                        >
+                          <EditorialImage
+                            image={item.image}
+                            variant="market-image"
+                          />
+                          <div className="market-product-heading">
+                            <h4>{item.name}</h4>
+                            <p className="market-price">{item.price}</p>
+                          </div>
+                          {item.description && (
+                            <p className="market-product-description">
+                              {item.description}
+                            </p>
+                          )}
+                          {item.unavailable && (
+                            <span className="status">Agotado</span>
+                          )}
+                        </article>
+                      ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </section>
+        )}
         {c.promotions.length > 0 && (
           <section
             className="promotions-section section-shell section-space"

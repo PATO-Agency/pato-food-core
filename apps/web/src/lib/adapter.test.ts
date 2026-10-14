@@ -11,6 +11,19 @@ import { resolveContentPolicy } from "./content-policy";
 import { readSanityConfiguration } from "./sanity-configuration";
 
 describe("content boundary", () => {
+  it("defaults legacy categories to carta and preserves explicit market classification", () => {
+    const fixture = structuredClone(vicafoodsContent);
+    const [legacy, market] = fixture.menuCategories;
+    delete legacy!.catalogSection;
+    Object.assign(market!, { catalogSection: "market" });
+    const content = adaptContent(fixture, vicafoodsConfig);
+    expect(
+      content.categories.find((category) => category.id === legacy!.id),
+    ).toHaveProperty("section", "menu");
+    expect(
+      content.categories.find((category) => category.id === market!.id),
+    ).toHaveProperty("section", "market");
+  });
   it("keeps the pilot contact disabled and renders latest observed burger price", () => {
     const content = adaptContent(vicafoodsContent, vicafoodsConfig);
     expect(content.conversion.href).toBeNull();

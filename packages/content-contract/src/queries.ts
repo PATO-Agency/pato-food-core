@@ -26,7 +26,7 @@ const siteQuery = (
     "proofPoints": coalesce(proofPoints[]{title, detail}, [])
   },
   "whatsappConversion": *[_type == "whatsappConversion" && ${singletonFilter} && ${filter}] | order(_updatedAt desc)[0]{${editorial}, enabled, intent, destinationE164, ctaLabel, prefilledMessage, placements, fallbackLabel},
-  "menuCategories": *[_type == "menuCategory" && ${filter}] | order(sortOrder asc){${editorial}, "id": _id, name, "slug": slug.current, description, groupLabel, sortOrder, visible},
+  "menuCategories": *[_type == "menuCategory" && ${filter}] | order(sortOrder asc){${editorial}, "id": _id, name, "slug": slug.current, description, groupLabel, catalogSection, sortOrder, visible},
   "menuItems": *[_type == "menuItem" && ${filter} && ${categoryFilter}] | order(sortOrder asc){${editorial}, "id": _id, name, "slug": slug.current, "categoryId": category._ref, description, pricingMode, "priceOptions": coalesce(priceOptions[]{label, amount, currency, billingUnit, unitQuantity, netContent{quantity, unit, count}}, []), "image": select(defined(image.asset) => image{${image}}), "badges": coalesce(badges, []), featured, availability, sortOrder},
   "galleryImages": *[_type == "galleryImage" && ${filter}] | order(sortOrder asc){${editorial}, "id": _id, image{${image}}, caption, category, credit, sortOrder, visible},
   "promotions": *[_type == "promotion" && ${filter}] | order(startsAt desc){${editorial}, "id": _id, title, text, "image": select(defined(image.asset) => image{${image}}), startsAt, endsAt, active, campaignId, useWhatsappCta},

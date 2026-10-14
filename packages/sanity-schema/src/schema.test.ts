@@ -1,5 +1,23 @@
 import { expect, it } from "vitest";
 import { schemaTypes, singletonTypes, singletonActions } from "./index";
+it("offers editors a website classification independent of pricing units", () => {
+  const category = schemaTypes.find((schema) => schema.name === "menuCategory");
+  const field = category?.fields.find(
+    (candidate) => candidate.name === "catalogSection",
+  );
+  expect(field).toMatchObject({
+    title: "Sección de la web",
+    type: "string",
+    description: expect.stringContaining("unidades"),
+    initialValue: "menu",
+    options: {
+      list: [
+        { title: "Carta preparada", value: "menu" },
+        { title: "Carnicería & Market", value: "market" },
+      ],
+    },
+  });
+});
 it("exposes exactly eight document types and provenance on every type", () => {
   expect(schemaTypes.map((s) => s.name)).toEqual([
     "business",

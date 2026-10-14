@@ -100,6 +100,8 @@ components:
     padding: "0.25rem 0.55rem"
 ---
 
+La carta de platos preparados y Carnicería & Market son secciones distintas. La carta conserva categorías y fotos junto al cursor; Market usa una galería de productos con precio por kg/pack, fotografías visibles y una delimitación horizontal dorada sobre superficie cálida oscura. El campo de categoría `catalogSection` en Sanity define la ubicación, sin inferirla de nombres o IDs. Market no se mezcla con destacados de platos preparados. La galería se adapta a tres, dos y una columna y recibe los mismos revelados GSAP; imágenes y contenido están disponibles antes de JavaScript.
+
 # Design System: Vicafoods
 
 ## Overview

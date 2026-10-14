@@ -431,6 +431,29 @@ const menuCategory = document("menuCategory", [
   slug,
   string("description", 240, false),
   string("groupLabel", 80),
+  defineField({
+    name: "catalogSection",
+    title: "Sección de la web",
+    type: "string",
+    description:
+      "Clasifica la categoría en Carta preparada o Carnicería & Market; no define las unidades ni la forma de venta. Si se omite, se muestra en Carta preparada.",
+    initialValue: "menu",
+    options: {
+      list: [
+        { title: "Carta preparada", value: "menu" },
+        { title: "Carnicería & Market", value: "market" },
+      ],
+      layout: "radio",
+    },
+    validation: (rule) =>
+      rule.custom(
+        (value) =>
+          value === undefined ||
+          value === "menu" ||
+          value === "market" ||
+          "Selecciona Carta preparada o Carnicería & Market",
+      ),
+  }),
   ...order,
 ]);
 const menuItem = document("menuItem", [

@@ -210,6 +210,7 @@ export const menuCategorySchema = z.object({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   description: text(240).optional(),
   groupLabel: text(80),
+  catalogSection: z.enum(["menu", "market"]).optional(),
   sortOrder: z.number().int().min(0).max(9999),
   visible: z.boolean(),
 });

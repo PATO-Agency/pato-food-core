@@ -1301,6 +1301,138 @@ button:focus-visible {
 .food-site .site-footer > span {
   font-size: 0.75rem;
 }
+.market-section {
+  border-block: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 4%, var(--paper));
+  scroll-margin-top: 1rem;
+}
+.market-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(220px, 0.75fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: end;
+}
+.market-buying-note {
+  padding-block: 1rem;
+  border-block: 1px solid var(--line);
+  display: grid;
+  gap: 0.75rem;
+}
+.market-buying-note > p {
+  color: var(--accent);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.market-buying-note > span,
+.market-reference-note,
+.market-category-heading p,
+.market-product-description {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+.market-buying-note .text-link {
+  min-height: 44px;
+  width: fit-content;
+  align-items: center;
+  display: inline-flex;
+  gap: 1rem;
+}
+.market-reference-note {
+  margin-top: 2rem;
+  max-width: 75ch;
+}
+.market-category {
+  margin-top: clamp(3rem, 5vw, 5rem);
+  scroll-margin-top: 2rem;
+}
+.market-category-heading {
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.market-category-heading h3 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 2.7rem);
+  font-weight: 500;
+}
+.market-category-heading p {
+  max-width: 48ch;
+}
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem 1.75rem;
+}
+.market-product {
+  min-width: 0;
+}
+.market-product .market-image {
+  aspect-ratio: 4 / 3;
+  border-radius: 0.45rem;
+  overflow: hidden;
+  background: var(--surface);
+}
+.market-product .market-image img {
+  object-fit: cover;
+  transition: transform 450ms var(--ease-out);
+}
+.market-product-heading {
+  margin-top: 1.1rem;
+}
+.market-product-heading h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.market-price {
+  margin-top: 0.5rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 1rem;
+}
+.market-product-description {
+  margin-top: 0.65rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .market-product:hover .market-image img {
+    transform: scale(1.035);
+  }
+}
+@media (max-width: 900px) {
+  .market-intro {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .market-buying-note {
+    max-width: 34rem;
+  }
+  .market-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .market-category-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+}
+@media (max-width: 560px) {
+  .market-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .food-site .site-header nav {
+    flex-wrap: wrap;
+    gap: 0 1.2rem;
+  }
+  .food-site .site-header nav a {
+    white-space: nowrap;
+  }
+}
 .food-site .reference-image-label {
   font-size: 0.7rem;
   color: #fff;

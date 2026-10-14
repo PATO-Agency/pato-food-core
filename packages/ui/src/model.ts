@@ -36,6 +36,7 @@ export interface LandingContent {
     name: string;
     description?: string;
     group?: string;
+    section?: "menu" | "market";
   }[];
   items: LandingItem[];
   gallery: LandingImage[];

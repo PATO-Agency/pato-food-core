@@ -49,6 +49,49 @@ const content: LandingContent = {
   },
 };
 describe("generic landing", () => {
+  it("separates butcher products from prepared dishes using CMS classification", () => {
+    const configured = structuredClone(content);
+    configured.categories.push({
+      id: "raw-cuts",
+      name: "Cortes de res",
+      section: "market",
+    });
+    configured.items.push({
+      id: "tomahawk",
+      categoryId: "raw-cuts",
+      name: "Tomahawk",
+      price: "S/ 99 / kg",
+      featured: true,
+      unavailable: false,
+      image: {
+        src: "/tomahawk.jpg",
+        alt: "Imagen referencial: tomahawk crudo",
+      },
+    });
+    const html = renderToStaticMarkup(<FoodLanding content={configured} />);
+    const carta = html.slice(
+      html.indexOf('id="carta"'),
+      html.indexOf('id="market"'),
+    );
+    const market = html.slice(
+      html.indexOf('id="market"'),
+      html.indexOf('id="experiencia"'),
+    );
+    expect(html).toContain('href="#market"');
+    expect(carta).toContain("Bowl del día");
+    expect(carta).not.toContain("Tomahawk");
+    expect(market).toContain("Carnicería &amp; Market");
+    expect(market).toContain("Tomahawk");
+    expect(market).toContain("S/ 99 / kg");
+    expect(market).toContain('alt="Imagen referencial: tomahawk crudo"');
+    const featured = html.slice(
+      html.indexOf('id="destacados"'),
+      html.indexOf('id="carta"'),
+    );
+    expect(featured).not.toContain("Tomahawk");
+    const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
   it("renders a second identity and usable native disclosures with no client-specific branches", () => {
     const html = renderToStaticMarkup(<FoodLanding content={content} />);
     expect(html).toContain("Jardín de prueba");
