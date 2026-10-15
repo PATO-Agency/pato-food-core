@@ -51,7 +51,8 @@ const categories = [
   groupLabel,
   sortOrder,
   visible: id !== "market",
-  catalogSection: id === "market" ? "market" : "menu",
+  catalogSection:
+    id === "market" ? "market" : id === "catering" ? "catering" : "menu",
 }));
 const catalog: [string, string, string, number, string, string?][] = [
   [
@@ -176,8 +177,12 @@ export const vicafoodsContent = siteContentSchema.parse({
   },
   whatsappConversion: {
     ...provenance,
-    sourceRef: "Usuario: canal y número confirmados; activación no autorizada",
+    sourceRef:
+      "Usuario: número confirmado; consulta de catering autorizada 14/10/2026. Pedidos pendientes.",
     enabled: false,
+    cateringEnabled: true,
+    cateringMessage:
+      "¡Hola, VICAFOODS! Quisiera consultar por el catering parrillero para un evento. ¿Podrían ayudarme con las opciones y la cotización?",
     intent: "order",
     destinationE164: "+51987384803",
     ctaLabel: "Haz tu pedido",

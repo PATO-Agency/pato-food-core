@@ -23,7 +23,7 @@ const category = {
 };
 it("accepts legacy categories and preserves only valid catalog sections", () => {
   expect(menuCategorySchema.parse(category).catalogSection).toBeUndefined();
-  for (const catalogSection of ["menu", "market"]) {
+  for (const catalogSection of ["menu", "market", "catering"]) {
     expect(
       menuCategorySchema.parse({ ...category, catalogSection }).catalogSection,
     ).toBe(catalogSection);

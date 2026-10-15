@@ -163,6 +163,8 @@ export const whatsappConversionSchema = z
   .object({
     ...editorial,
     enabled: z.boolean(),
+    cateringEnabled: z.boolean().optional(),
+    cateringMessage: text(500).optional(),
     intent: whatsappIntentSchema,
     destinationE164: e164Schema.optional(),
     ctaLabel: text(60),
@@ -177,9 +179,16 @@ export const whatsappConversionSchema = z
       ),
     fallbackLabel: text(120),
   })
-  .refine((v) => !v.enabled || Boolean(v.destinationE164), {
-    message: "Enabled CTA requires a confirmed E.164 destination",
-    path: ["destinationE164"],
+  .refine(
+    (v) => !(v.enabled || v.cateringEnabled) || Boolean(v.destinationE164),
+    {
+      message: "Enabled CTA requires a confirmed E.164 destination",
+      path: ["destinationE164"],
+    },
+  )
+  .refine((v) => !v.cateringEnabled || Boolean(v.cateringMessage), {
+    message: "Catering inquiry requires its own message",
+    path: ["cateringMessage"],
   });
 export const priceOptionSchema = z.object({
   label: text(80),
@@ -210,7 +219,7 @@ export const menuCategorySchema = z.object({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   description: text(240).optional(),
   groupLabel: text(80),
-  catalogSection: z.enum(["menu", "market"]).optional(),
+  catalogSection: z.enum(["menu", "market", "catering"]).optional(),
   sortOrder: z.number().int().min(0).max(9999),
   visible: z.boolean(),
 });

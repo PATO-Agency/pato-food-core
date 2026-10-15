@@ -49,6 +49,40 @@ const content: LandingContent = {
   },
 };
 describe("generic landing", () => {
+  it("gives catering its own section and inquiry while dish orders remain disabled", () => {
+    const configured = structuredClone(content);
+    configured.categories.push({
+      id: "events",
+      name: "Catering parrillero",
+      section: "catering",
+    });
+    configured.lines.push("Catering parrillero");
+    configured.items.push({
+      id: "event-service",
+      name: "Catering parrillero",
+      categoryId: "events",
+      price: "Consultar",
+      featured: true,
+      unavailable: false,
+    });
+    configured.conversion.cateringHref =
+      "https://wa.me/51999999999?text=Consulta%20catering";
+    const html = renderToStaticMarkup(<FoodLanding content={configured} />);
+    const carta = html.slice(
+      html.indexOf('id="carta"'),
+      html.indexOf('id="catering"'),
+    );
+    expect(carta).not.toContain("Catering parrillero");
+    expect(html).toContain('href="#catering"');
+    expect(html).toContain("Los buenos momentos se comparten.");
+    expect(html).toContain(
+      'href="https://wa.me/51999999999?text=Consulta%20catering"',
+    );
+    expect(html).toContain("Consultar catering por WhatsApp");
+    expect((html.match(/href="https:\/\/wa.me\//g) ?? []).length).toBe(1);
+    const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
   it("separates butcher products from prepared dishes using CMS classification", () => {
     const configured = structuredClone(content);
     configured.categories.push({

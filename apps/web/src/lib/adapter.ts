@@ -122,6 +122,14 @@ export function adaptContent(
       .map((s) => ({ label: s.network, href: s.url })),
     conversion: {
       href: buildWhatsAppUrl(content.whatsappConversion),
+      cateringHref: content.whatsappConversion.cateringEnabled
+        ? buildWhatsAppUrl({
+            ...content.whatsappConversion,
+            enabled: true,
+            intent: "event",
+            prefilledMessage: content.whatsappConversion.cateringMessage!,
+          })
+        : null,
       label: content.whatsappConversion.ctaLabel,
       fallbackLabel: content.whatsappConversion.fallbackLabel,
       intent: content.whatsappConversion.intent,

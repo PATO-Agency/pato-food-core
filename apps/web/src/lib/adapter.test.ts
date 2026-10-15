@@ -11,6 +11,14 @@ import { resolveContentPolicy } from "./content-policy";
 import { readSanityConfiguration } from "./sanity-configuration";
 
 describe("content boundary", () => {
+  it("keeps catering inquiry disabled unless explicitly enabled in content", () => {
+    const fixture = structuredClone(vicafoodsContent);
+    delete fixture.whatsappConversion.cateringEnabled;
+    delete fixture.whatsappConversion.cateringMessage;
+    expect(
+      adaptContent(fixture, vicafoodsConfig).conversion.cateringHref,
+    ).toBeNull();
+  });
   it("defaults legacy categories to carta and preserves explicit market classification", () => {
     const fixture = structuredClone(vicafoodsContent);
     const [legacy, market] = fixture.menuCategories;
@@ -28,6 +36,11 @@ describe("content boundary", () => {
     const content = adaptContent(vicafoodsContent, vicafoodsConfig);
     expect(content.conversion.href).toBeNull();
     expect(content.conversion.phone).toBeUndefined();
+    const inquiry = new URL(content.conversion.cateringHref!);
+    expect(inquiry.pathname).toBe("/51987384803");
+    expect(inquiry.searchParams.get("text")).toBe(
+      vicafoodsContent.whatsappConversion.cateringMessage,
+    );
     expect(vicafoodsContent.whatsappConversion.destinationE164).toBe(
       "+51987384803",
     );

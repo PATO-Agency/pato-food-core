@@ -14,6 +14,7 @@ it("offers editors a website classification independent of pricing units", () =>
       list: [
         { title: "Carta preparada", value: "menu" },
         { title: "Carnicería & Market", value: "market" },
+        { title: "Catering", value: "catering" },
       ],
     },
   });

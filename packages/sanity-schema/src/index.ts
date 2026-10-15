@@ -389,6 +389,28 @@ const business = document("business", [
 ]);
 const whatsappConversion = document("whatsappConversion", [
   bool("enabled"),
+  defineField({
+    name: "cateringEnabled",
+    title: "Habilitar consultas de catering",
+    description:
+      "Activa únicamente el botón de catering, independiente de los pedidos de la carta y Market.",
+    type: "boolean",
+    initialValue: false,
+  }),
+  defineField({
+    name: "cateringMessage",
+    title: "Mensaje de consulta de catering",
+    type: "string",
+    validation: (rule) =>
+      rule
+        .max(500)
+        .custom(
+          (value, context) =>
+            context.document?.cateringEnabled !== true ||
+            Boolean(value?.trim()) ||
+            "Escribe el mensaje para consultar catering",
+        ),
+  }),
   enumeration("intent", ["order", "reservation", "inquiry", "event"]),
   defineField({
     name: "destinationE164",
@@ -398,7 +420,8 @@ const whatsappConversion = document("whatsappConversion", [
         if (value !== undefined && !e164Schema.safeParse(value).success)
           return "Use a confirmed E.164 number";
         return (
-          context.document?.enabled !== true ||
+          (context.document?.enabled !== true &&
+            context.document?.cateringEnabled !== true) ||
           value !== undefined ||
           "Enabled CTA requires a confirmed E.164 destination"
         );
@@ -436,12 +459,13 @@ const menuCategory = document("menuCategory", [
     title: "Sección de la web",
     type: "string",
     description:
-      "Clasifica la categoría en Carta preparada o Carnicería & Market; no define las unidades ni la forma de venta. Si se omite, se muestra en Carta preparada.",
+      "Clasifica la categoría en Carta preparada, Carnicería & Market o Catering; no define las unidades ni la forma de venta. Si se omite, se muestra en Carta preparada.",
     initialValue: "menu",
     options: {
       list: [
         { title: "Carta preparada", value: "menu" },
         { title: "Carnicería & Market", value: "market" },
+        { title: "Catering", value: "catering" },
       ],
       layout: "radio",
     },
@@ -451,7 +475,8 @@ const menuCategory = document("menuCategory", [
           value === undefined ||
           value === "menu" ||
           value === "market" ||
-          "Selecciona Carta preparada o Carnicería & Market",
+          value === "catering" ||
+          "Selecciona Carta preparada, Carnicería & Market o Catering",
       ),
   }),
   ...order,

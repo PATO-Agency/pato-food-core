@@ -4,7 +4,13 @@ export interface LandingImage {
   caption?: string;
 }
 export type ConversionLocation =
-  "hero" | "navigation" | "menu" | "promotion" | "floating" | "footer";
+  | "hero"
+  | "navigation"
+  | "menu"
+  | "promotion"
+  | "floating"
+  | "footer"
+  | "catering";
 export interface LandingPromotion {
   id: string;
   title: string;
@@ -36,7 +42,7 @@ export interface LandingContent {
     name: string;
     description?: string;
     group?: string;
-    section?: "menu" | "market";
+    section?: "menu" | "market" | "catering";
   }[];
   items: LandingItem[];
   gallery: LandingImage[];
@@ -50,6 +56,7 @@ export interface LandingContent {
   socials: { label: string; href: string }[];
   conversion: {
     href: string | null;
+    cateringHref?: string | null;
     label: string;
     fallbackLabel: string;
     phone?: string;

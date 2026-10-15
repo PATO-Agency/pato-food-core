@@ -121,7 +121,7 @@ export function FoodLanding({
   previewExitAvailable?: boolean;
 }) {
   const menuCategories = c.categories.filter(
-    (category) => category.section !== "market",
+    (category) => !category.section || category.section === "menu",
   );
   const marketCategories = c.categories.filter(
     (category) => category.section === "market",
@@ -130,6 +130,13 @@ export function FoodLanding({
   const marketIds = new Set(marketCategories.map((category) => category.id));
   const menuItems = c.items.filter((item) => menuIds.has(item.categoryId));
   const marketItems = c.items.filter((item) => marketIds.has(item.categoryId));
+  const cateringCategories = c.categories.filter(
+    (category) => category.section === "catering",
+  );
+  const cateringItems = c.items.filter((item) =>
+    cateringCategories.some((category) => category.id === item.categoryId),
+  );
+  const hasCatering = cateringCategories.length > 0;
   const cta = (
     location: ConversionLocation,
     label?: string,
@@ -185,7 +192,9 @@ export function FoodLanding({
           {marketCategories.length > 0 && (
             <a href="#market">Carnicería &amp; Market</a>
           )}
-          <a href="#experiencia">La experiencia</a>
+          <a href={hasCatering ? "#catering" : "#experiencia"}>
+            {hasCatering ? "Catering" : "La experiencia"}
+          </a>
           <a href="#visitanos">Visítanos</a>
         </nav>
         {c.conversion.placements.includes("navigation") && (
@@ -235,9 +244,11 @@ export function FoodLanding({
                 href={
                   category?.section === "market"
                     ? "#market"
-                    : category
-                      ? `#category-${category.id}`
-                      : "#carta"
+                    : category?.section === "catering"
+                      ? "#catering"
+                      : category
+                        ? `#category-${category.id}`
+                        : "#carta"
                 }
               >
                 <span>{line}</span>
@@ -398,12 +409,43 @@ export function FoodLanding({
             </div>
           </section>
         )}
-        <section className="section-shell section-space" id="experiencia">
-          <SectionHeading
-            eyebrow="LA EXPERIENCIA"
-            title="Los buenos momentos se comparten."
-            text={c.description}
-          />
+        <section
+          className={`section-shell section-space${hasCatering ? " catering-section" : ""}`}
+          id={hasCatering ? "catering" : "experiencia"}
+          aria-label={hasCatering ? "Catering parrillero" : "La experiencia"}
+        >
+          {hasCatering && <span id="experiencia" aria-hidden="true" />}
+          <div className={hasCatering ? "catering-intro" : undefined}>
+            <SectionHeading
+              eyebrow="LA EXPERIENCIA"
+              title="Los buenos momentos se comparten."
+              text={hasCatering ? undefined : c.description}
+            />
+            {hasCatering && (
+              <div className="catering-copy">
+                <h3>{cateringItems[0]?.name ?? "Catering parrillero"}</h3>
+                <p>
+                  {cateringItems[0]?.description ||
+                    "Reúne a los tuyos alrededor de la parrilla. Consulta las opciones de catering para tu próximo encuentro."}
+                </p>
+                <p className="catering-details">
+                  Cuéntanos la fecha, el lugar y cuántas personas los
+                  acompañarán.
+                </p>
+                <ConversionLink
+                  href={c.conversion.cateringHref ?? null}
+                  location="catering"
+                  intent="event"
+                  siteKey={c.siteKey}
+                  onTrack={onTrack}
+                  contentId={cateringItems[0]?.id}
+                  disabledLabel="Consulta de catering pendiente de habilitar"
+                >
+                  Consultar catering por WhatsApp
+                </ConversionLink>
+              </div>
+            )}
+          </div>
           <div
             className={`gallery-grid gallery-count-${Math.min(
               c.gallery.length || 3,
