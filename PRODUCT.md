@@ -16,7 +16,7 @@ Next.js web app and hosted Sanity Studio. Private sandbox, reserved `pato-demo-v
 
 ## Capabilities and Constraints
 
-Seven categories and twenty-seven products, with prepared dishes separated from Carnicería & Market by the editable Sanity category field `catalogSection`. Market contains twelve products: the original two plus seven cuts and three sausages added on 14 October 2026. Eight new prices reference the business's historical 2024 butcher catalogue; two maple sausage prices are explicitly illustrative. Current prices and business validation remain pending. Stock photos are licensed and explicitly referential. Ordering is disabled. Content and native actions must remain available without JavaScript or if the animation controller fails.
+Seven categories and twenty-seven catalogue records: fourteen prepared dishes, twelve Carnicería & Market products and one Catering service. The editable Sanity category field `catalogSection` separates these sections with `menu`, `market` and `catering`. Market contains the original two products plus seven cuts and three sausages added on 14 October 2026. Eight new prices reference the business's historical 2024 butcher catalogue; two maple sausage prices are explicitly illustrative. Current prices and business validation remain pending. Stock photos are licensed and explicitly referential. Catering inquiries through WhatsApp are enabled independently through `cateringEnabled` and `cateringMessage`, using the confirmed destination. Orders for dishes and cuts remain disabled and saved for a later delivery in `docs/pending/2026-10-13-entrega-vicafoods.md`. Content and native actions must remain available without JavaScript or if the animation controller fails.
 
 ## Brand Commitments
 
@@ -35,4 +35,4 @@ Known menu: `examples/vicafoods/src/index.ts`. Licensed photos and provenance: `
 
 ## Open Decisions
 
-Content approval, live contact, production ownership/domain, off-device backup and full disaster recovery, physical-phone validation and client acceptance. Current-content backup and isolated draft recovery have been rehearsed locally.
+Content approval, production ownership/domain, off-device backup and full disaster recovery, physical-phone validation and client acceptance. Current-content backup and isolated draft recovery have been rehearsed locally.
