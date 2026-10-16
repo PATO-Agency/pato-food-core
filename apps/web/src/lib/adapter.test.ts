@@ -32,10 +32,16 @@ describe("content boundary", () => {
       content.categories.find((category) => category.id === market!.id),
     ).toHaveProperty("section", "market");
   });
-  it("keeps the pilot contact disabled and renders latest observed burger price", () => {
+  it("enables authorized WhatsApp inquiries while preserving reference content", () => {
     const content = adaptContent(vicafoodsContent, vicafoodsConfig);
-    expect(content.conversion.href).toBeNull();
-    expect(content.conversion.phone).toBeUndefined();
+    expect(content.conversion.href).toMatch(
+      /^https:\/\/wa.me\/51987384803\?text=/,
+    );
+    expect(content.conversion.phone).toBe("+51987384803");
+    expect(content.items.filter((item) => item.orderHref)).toHaveLength(26);
+    expect(
+      content.items.find((item) => item.id === "catering")?.orderHref,
+    ).toBeNull();
     const inquiry = new URL(content.conversion.cateringHref!);
     expect(inquiry.pathname).toBe("/51987384803");
     expect(inquiry.searchParams.get("text")).toBe(
@@ -45,7 +51,7 @@ describe("content boundary", () => {
       "+51987384803",
     );
     expect(content.conversion.fallbackLabel).toBe(
-      "Canal configurado · activación pendiente",
+      "Canal de pedidos temporalmente deshabilitado",
     );
     expect(content.demo).toBe(true);
     expect(content.items.find((i) => i.id === "hamb-angus")?.price).toContain(
@@ -59,6 +65,14 @@ describe("content boundary", () => {
       value: "12:00–17:00",
     });
   });
+  it("removes all product and general order links when orders are disabled, preserving catering", () => {
+    const fixture = structuredClone(vicafoodsContent);
+    fixture.whatsappConversion.enabled = false;
+    const content = adaptContent(fixture, vicafoodsConfig);
+    expect(content.items.every((item) => !item.orderHref)).toBe(true);
+    expect(content.conversion.href).toBeNull();
+    expect(content.conversion.cateringHref).toContain("https://wa.me/");
+  });
   it("filters hidden categories and their items", () => {
     const fixture = structuredClone(vicafoodsContent);
     fixture.menuCategories[0]!.visible = false;
@@ -70,6 +84,9 @@ describe("content boundary", () => {
     expect(
       content.items.find((i) => i.id === fixture.menuItems[6]!.id)?.unavailable,
     ).toBe(true);
+    expect(
+      content.items.find((i) => i.id === fixture.menuItems[6]!.id)?.orderHref,
+    ).toBeNull();
   });
   it("exposes only currently active promotions and preserves CTA placements", () => {
     const fixture = structuredClone(vicafoodsContent);

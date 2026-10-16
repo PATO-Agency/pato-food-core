@@ -7,6 +7,9 @@ export const CTA_LOCATIONS = [
   "floating",
   "footer",
   "catering",
+  "menu-item",
+  "market-item",
+  "featured-item",
 ] as const;
 export const WHATSAPP_INTENTS = [
   "order",

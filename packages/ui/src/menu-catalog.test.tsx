@@ -43,7 +43,11 @@ const items: LandingItem[] = [
 describe("menu catalog", () => {
   it("ships native photo disclosures and category anchors before JavaScript runs", () => {
     const html = renderToStaticMarkup(
-      <MenuCatalog categories={categories} items={items} />,
+      <MenuCatalog
+        categories={categories}
+        items={items}
+        siteKey="synthetic-demo"
+      />,
     );
     expect(html).toContain('<details class="menu-photo-disclosure">');
     expect(html).toContain("Ver fotografía de Bowl del día");
@@ -54,7 +58,13 @@ describe("menu catalog", () => {
     expect(html).not.toContain("Ver fotografía de Pan artesanal");
   });
   it("offers a keyboard reachable native summary and the full photo without a modal", async () => {
-    render(<MenuCatalog categories={categories} items={items} />);
+    render(
+      <MenuCatalog
+        categories={categories}
+        items={items}
+        siteKey="synthetic-demo"
+      />,
+    );
     const summary = screen
       .getByLabelText("Ver fotografía de Bowl del día")
       .closest("summary");
@@ -73,7 +83,13 @@ describe("menu catalog", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
   it("updates aria-current as the category scrolls under the sticky nav", async () => {
-    render(<MenuCatalog categories={categories} items={items} />);
+    render(
+      <MenuCatalog
+        categories={categories}
+        items={items}
+        siteKey="synthetic-demo"
+      />,
+    );
     const first = screen.getByRole("link", { name: "Almuerzos" });
     expect(first.getAttribute("aria-current")).toBe("location");
     Object.defineProperty(
@@ -97,7 +113,13 @@ describe("menu catalog", () => {
   });
   it("marks the native anchor destination active while respecting its scroll margin", async () => {
     document.documentElement.style.scrollPaddingTop = "16px";
-    render(<MenuCatalog categories={categories} items={items} />);
+    render(
+      <MenuCatalog
+        categories={categories}
+        items={items}
+        siteKey="synthetic-demo"
+      />,
+    );
     const navigation = screen.getByRole("navigation");
     Object.defineProperty(navigation, "getBoundingClientRect", {
       value: () => ({ bottom: 82 }),

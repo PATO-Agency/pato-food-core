@@ -8,6 +8,7 @@ import {
 import type { LandingContent, LandingImage, LandingItem } from "./model";
 import { MenuCatalog } from "./menu-catalog";
 import { LandingMotion } from "./landing-motion";
+import { ProductOrderLink } from "./product-order-link";
 export * from "./model";
 export * from "./conversion-link";
 
@@ -91,7 +92,15 @@ export function EditorialImage({
   );
 }
 
-function MenuCard({ item }: { item: LandingItem }) {
+function MenuCard({
+  item,
+  siteKey,
+  onTrack,
+}: {
+  item: LandingItem;
+  siteKey: string;
+  onTrack?: AnalyticsAdapter;
+}) {
   return (
     <article className={`menu-card ${item.unavailable ? "unavailable" : ""}`}>
       <EditorialImage image={item.image} variant="product-image" />
@@ -104,6 +113,12 @@ function MenuCard({ item }: { item: LandingItem }) {
           <span>{item.price}</span>
           {item.unavailable && <span className="status">Agotado</span>}
         </div>
+        <ProductOrderLink
+          item={item}
+          siteKey={siteKey}
+          location="featured-item"
+          onTrack={onTrack}
+        />
       </div>
     </article>
   );
@@ -174,8 +189,10 @@ export function FoodLanding({
           <span>ESTUDIO PATO / DEMO INTERNA</span>
           <p>
             {preview ? "Vista previa editorial." : "Contenido de demostración."}{" "}
-            Precios y activos pendientes de validación. No es un canal de
-            pedidos.
+            Precios y activos pendientes de validación.{" "}
+            {c.conversion.href
+              ? "La disponibilidad y el pedido se confirman por WhatsApp."
+              : "No es un canal de pedidos."}
           </p>
           {previewExitAvailable && (
             <a href="/api/draft/disable">Salir de vista previa</a>
@@ -268,7 +285,12 @@ export function FoodLanding({
               .filter((item) => item.featured)
               .slice(0, 3)
               .map((item) => (
-                <MenuCard key={item.id} item={item} />
+                <MenuCard
+                  key={item.id}
+                  item={item}
+                  siteKey={c.siteKey}
+                  onTrack={onTrack}
+                />
               ))}
           </div>
           {c.demo && (
@@ -296,7 +318,12 @@ export function FoodLanding({
               />
               {cta("menu")}
             </div>
-            <MenuCatalog categories={menuCategories} items={menuItems} />
+            <MenuCatalog
+              categories={menuCategories}
+              items={menuItems}
+              siteKey={c.siteKey}
+              onTrack={onTrack}
+            />
           </div>
         </section>
         {marketCategories.length > 0 && (
@@ -368,6 +395,12 @@ export function FoodLanding({
                           {item.unavailable && (
                             <span className="status">Agotado</span>
                           )}
+                          <ProductOrderLink
+                            item={item}
+                            siteKey={c.siteKey}
+                            location="market-item"
+                            onTrack={onTrack}
+                          />
                         </article>
                       ))}
                   </div>

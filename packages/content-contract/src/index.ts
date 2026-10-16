@@ -362,6 +362,77 @@ export function buildWhatsAppUrl(input: WhatsAppConversion): string | null {
     return null;
   return `https://wa.me/${result.data.destinationE164.slice(1)}?text=${encodeURIComponent(result.data.prefilledMessage)}`;
 }
+/** A product click requests availability; it never confirms stock or an order. */
+export function buildProductWhatsAppUrl({
+  conversion,
+  item,
+  category,
+  businessName,
+}: {
+  conversion: WhatsAppConversion;
+  item: MenuItem;
+  category: z.infer<typeof menuCategorySchema>;
+  businessName: string;
+}): string | null {
+  const contact = whatsappConversionSchema.safeParse(conversion);
+  const product = menuItemSchema.safeParse(item);
+  const group = menuCategorySchema.safeParse(category);
+  const name = text(80).safeParse(businessName);
+  if (
+    !contact.success ||
+    !contact.data.enabled ||
+    !contact.data.destinationE164 ||
+    !product.success ||
+    !group.success ||
+    !name.success ||
+    !group.data.visible ||
+    product.data.categoryId !== group.data.id ||
+    group.data.catalogSection === "catering" ||
+    ["hidden", "outOfStock"].includes(product.data.availability)
+  )
+    return null;
+
+  const unitLabels = {
+    kg: "kg",
+    g: "g",
+    unit: "unidad",
+    portion: "porción",
+    package: "pack",
+    person: "persona",
+    event: "evento",
+  };
+  const option = product.data.priceOptions[0];
+  const net = option?.netContent;
+  const netLabel = net
+    ? `${net.count ? `${net.count} × ` : ""}${net.quantity} ${net.unit}`
+    : undefined;
+  const salesUnit = option
+    ? `${option.unitQuantity === 1 ? "" : `${option.unitQuantity} `}${unitLabels[option.billingUnit]}`
+    : undefined;
+  const optionLabel =
+    option?.label === "Presentación del catálogo" ? undefined : option?.label;
+  const presentation = option
+    ? [
+        optionLabel,
+        netLabel && !optionLabel?.includes(netLabel) ? netLabel : undefined,
+      ]
+        .filter(Boolean)
+        .join(" · ") || salesUnit
+    : undefined;
+  const section =
+    group.data.catalogSection === "market"
+      ? "Carnicería & Market (para preparar en casa)"
+      : "la carta de platos preparados";
+  const message = [
+    `¡Hola, ${name.data}! Quisiera pedir «${product.data.name}» de ${section}.`,
+    presentation ? `Presentación: ${presentation}.` : undefined,
+    salesUnit ? `Unidad de venta: ${salesUnit}.` : undefined,
+    "¿Tienen disponibilidad? ¿Cómo puedo coordinar mi pedido?",
+  ]
+    .filter(Boolean)
+    .join("\n");
+  return `https://wa.me/${contact.data.destinationE164.slice(1)}?text=${encodeURIComponent(message)}`;
+}
 export function formatPrice(item: MenuItem, locale = "es-PE"): string {
   if (item.pricingMode === "onRequest") return "Consultar";
   const option = item.priceOptions[0];

@@ -30,6 +30,8 @@ export function ConversionLink({
   disabledLabel = "Canal de contacto pendiente de confirmar",
   contentId,
   campaignId,
+  appearance = "button",
+  ariaLabel,
 }: {
   href: string | null;
   children: ReactNode;
@@ -41,6 +43,8 @@ export function ConversionLink({
   disabledLabel?: string;
   contentId?: string;
   campaignId?: string;
+  appearance?: "button" | "text";
+  ariaLabel?: string;
 }) {
   if (!href)
     return (
@@ -53,8 +57,9 @@ export function ConversionLink({
     );
   return (
     <a
-      className={`button ${className}`}
+      className={`${appearance === "button" ? "button" : "conversion-text"} ${className}`}
       href={href}
+      aria-label={ariaLabel}
       onClick={() => {
         try {
           const event = {

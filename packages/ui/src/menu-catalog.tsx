@@ -6,15 +6,21 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import type { LandingContent, LandingItem } from "./model";
 import { clampMenuPreview, findActiveCategory } from "./menu-catalog-utils";
+import { ProductOrderLink } from "./product-order-link";
+import type { AnalyticsAdapter } from "./conversion-link";
 
 gsap.registerPlugin(useGSAP);
 
 export function MenuCatalog({
   categories,
   items,
+  siteKey,
+  onTrack,
 }: {
   categories: LandingContent["categories"];
   items: LandingItem[];
+  siteKey: string;
+  onTrack?: AnalyticsAdapter;
 }) {
   const root = useRef<HTMLDivElement>(null);
   const nav = useRef<HTMLElement>(null);
@@ -245,42 +251,50 @@ export function MenuCatalog({
                       {item.unavailable && (
                         <span className="status">Agotado</span>
                       )}
-                      {item.image && (
-                        <details className="menu-photo-disclosure">
-                          <summary
-                            aria-label={`Ver fotografía de ${item.name}`}
-                          >
-                            <span>Ver fotografía</span>
-                            <svg
-                              className="menu-photo-icon"
-                              aria-hidden="true"
-                              focusable="false"
-                              viewBox="0 0 20 20"
-                              fill="none"
+                      <div className="menu-item-actions">
+                        <ProductOrderLink
+                          item={item}
+                          siteKey={siteKey}
+                          location="menu-item"
+                          onTrack={onTrack}
+                        />
+                        {item.image && (
+                          <details className="menu-photo-disclosure">
+                            <summary
+                              aria-label={`Ver fotografía de ${item.name}`}
                             >
-                              <path
-                                d="M5 15 15 5M5 5h10v10"
-                                stroke="currentColor"
-                                strokeWidth="1.4"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </summary>
-                          <figure className="menu-inline-photo">
-                            <div>
-                              <Image
-                                src={item.image.src}
-                                alt={item.image.alt}
-                                fill
-                                sizes="(max-width: 680px) calc(100vw - 140px), 360px"
-                                loading="lazy"
-                              />
-                            </div>
-                            <figcaption>Imagen referencial</figcaption>
-                          </figure>
-                        </details>
-                      )}
+                              <span>Ver fotografía</span>
+                              <svg
+                                className="menu-photo-icon"
+                                aria-hidden="true"
+                                focusable="false"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                              >
+                                <path
+                                  d="M5 15 15 5M5 5h10v10"
+                                  stroke="currentColor"
+                                  strokeWidth="1.4"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </summary>
+                            <figure className="menu-inline-photo">
+                              <div>
+                                <Image
+                                  src={item.image.src}
+                                  alt={item.image.alt}
+                                  fill
+                                  sizes="(max-width: 680px) calc(100vw - 140px), 360px"
+                                  loading="lazy"
+                                />
+                              </div>
+                              <figcaption>Imagen referencial</figcaption>
+                            </figure>
+                          </details>
+                        )}
+                      </div>
                     </div>
                     <span className="menu-price">{item.price}</span>
                   </li>

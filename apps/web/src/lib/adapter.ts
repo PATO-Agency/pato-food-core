@@ -1,5 +1,6 @@
 import {
   buildWhatsAppUrl,
+  buildProductWhatsAppUrl,
   formatPrice,
   isPromotionActive,
   siteContentSchema,
@@ -80,6 +81,14 @@ export function adaptContent(
           featured: item.featured,
           unavailable: item.availability === "outOfStock",
           image: item.image,
+          orderHref: buildProductWhatsAppUrl({
+            conversion: content.whatsappConversion,
+            item,
+            category: categories.find(
+              (category) => category.id === item.categoryId,
+            )!,
+            businessName: business.displayName,
+          }),
         };
       }),
     gallery: content.galleryImages

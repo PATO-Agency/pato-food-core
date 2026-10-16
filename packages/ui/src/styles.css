@@ -1347,6 +1347,27 @@ button:focus-visible {
     gap: 1.5rem;
   }
 }
+.product-order-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 44px;
+  gap: 0.65rem;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.25em;
+}
+.product-order-link:hover {
+  text-decoration-color: currentColor;
+}
+.market-product .product-order-link,
+.menu-card .product-order-link {
+  margin-top: 0.65rem;
+}
 .market-section {
   border-block: 1px solid var(--accent);
   background: color-mix(in srgb, var(--accent) 4%, var(--paper));

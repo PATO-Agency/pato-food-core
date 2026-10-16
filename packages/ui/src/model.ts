@@ -10,7 +10,10 @@ export type ConversionLocation =
   | "promotion"
   | "floating"
   | "footer"
-  | "catering";
+  | "catering"
+  | ProductConversionLocation;
+export type ProductConversionLocation =
+  "menu-item" | "market-item" | "featured-item";
 export interface LandingPromotion {
   id: string;
   title: string;
@@ -28,6 +31,7 @@ export interface LandingItem {
   featured: boolean;
   unavailable: boolean;
   image?: LandingImage;
+  orderHref?: string | null;
 }
 export interface LandingContent {
   siteKey: string;

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildWhatsAppUrl,
+  buildProductWhatsAppUrl,
   whatsappConversionSchema,
   menuItemSchema,
   menuCategorySchema,
@@ -78,6 +79,152 @@ describe("WhatsApp contract", () => {
     expect(buildWhatsAppUrl(whatsappConversionSchema.parse(whatsapp))).toBe(
       "https://wa.me/51912345678?text=Hola%2C%20caf%C3%A9%20%26%20pan%3F",
     );
+  });
+});
+describe("product WhatsApp inquiries", () => {
+  const conversion = whatsappConversionSchema.parse(whatsapp);
+  const item = menuItemSchema.parse({
+    ...metadata,
+    id: "pork-pack",
+    slug: "pork-pack",
+    name: "Hamburguesa de cerdo & hierbas + ají",
+    categoryId: category.id,
+    pricingMode: "fixed",
+    priceOptions: [
+      {
+        label: "Pack de 4",
+        amount: 25,
+        currency: "PEN",
+        billingUnit: "package",
+        unitQuantity: 1,
+        netContent: { count: 4, quantity: 150, unit: "g" },
+      },
+    ],
+    featured: false,
+    availability: "available",
+    sortOrder: 0,
+  });
+  const group = menuCategorySchema.parse({
+    ...category,
+    catalogSection: "market",
+  });
+  const input = {
+    conversion,
+    item,
+    category: group,
+    businessName: "VICAFOODS",
+  };
+  it("encodes the exact product, pack content and section without quoting an unapproved price", () => {
+    const link = new URL(buildProductWhatsAppUrl(input)!);
+    expect(link.origin + link.pathname).toBe("https://wa.me/51912345678");
+    const message = link.searchParams.get("text")!;
+    expect(message).toContain(item.name);
+    expect(message).toContain("Carnicería & Market (para preparar en casa)");
+    expect(message).toContain("Presentación: Pack de 4 · 4 × 150 g.");
+    expect(message).toContain("Unidad de venta: pack.");
+    expect(message).toContain("¿Tienen disponibilidad?");
+    expect(message).not.toMatch(/S\/|25\.00|confirmado/);
+  });
+  it("distinguishes prepared portions from raw cuts sold by kilo and follows CMS edits", () => {
+    const prepared = new URL(
+      buildProductWhatsAppUrl({
+        ...input,
+        category: { ...group, catalogSection: "menu" },
+        item: {
+          ...item,
+          name: "Corte a la parrilla 500 g",
+          priceOptions: [
+            {
+              ...item.priceOptions[0]!,
+              label: "Porción de 500 g",
+              billingUnit: "portion",
+              netContent: undefined,
+            },
+          ],
+        },
+      })!,
+    ).searchParams.get("text")!;
+    expect(prepared).toContain(
+      "Corte a la parrilla 500 g» de la carta de platos preparados",
+    );
+    expect(prepared).toContain("Unidad de venta: porción.");
+    const raw = new URL(
+      buildProductWhatsAppUrl({
+        ...input,
+        item: {
+          ...item,
+          name: "Picanha nacional",
+          priceOptions: [
+            {
+              ...item.priceOptions[0]!,
+              label: "Por kilogramo",
+              billingUnit: "kg",
+              netContent: undefined,
+            },
+          ],
+        },
+      })!,
+    ).searchParams.get("text")!;
+    expect(raw).toContain("Picanha nacional» de Carnicería & Market");
+    expect(raw).toContain("Unidad de venta: kg.");
+    expect(raw).not.toContain("Hamburguesa");
+  });
+  it("uses the sales unit instead of an internal generic presentation label", () => {
+    const message = new URL(
+      buildProductWhatsAppUrl({
+        ...input,
+        item: {
+          ...item,
+          priceOptions: [
+            {
+              ...item.priceOptions[0]!,
+              label: "Presentación del catálogo",
+              billingUnit: "portion",
+              netContent: undefined,
+            },
+          ],
+        },
+      })!,
+    ).searchParams.get("text")!;
+    expect(message).toContain("Presentación: porción.");
+    expect(message).not.toContain("Presentación del catálogo");
+  });
+  it("respects disabled contact, unavailable/hidden products and hidden or mismatched categories", () => {
+    expect(
+      buildProductWhatsAppUrl({
+        ...input,
+        conversion: { ...conversion, enabled: false },
+      }),
+    ).toBeNull();
+    expect(
+      buildProductWhatsAppUrl({
+        ...input,
+        conversion: { ...conversion, destinationE164: undefined },
+      }),
+    ).toBeNull();
+    for (const availability of ["outOfStock", "hidden"] as const) {
+      expect(
+        buildProductWhatsAppUrl({ ...input, item: { ...item, availability } }),
+      ).toBeNull();
+    }
+    expect(
+      buildProductWhatsAppUrl({
+        ...input,
+        category: { ...group, visible: false },
+      }),
+    ).toBeNull();
+    expect(
+      buildProductWhatsAppUrl({
+        ...input,
+        category: { ...group, id: "other" },
+      }),
+    ).toBeNull();
+    expect(
+      buildProductWhatsAppUrl({
+        ...input,
+        category: { ...group, catalogSection: "catering" },
+      }),
+    ).toBeNull();
   });
 });
 it("uses separate draft and approved projections with safe category references", () => {

@@ -49,6 +49,61 @@ const content: LandingContent = {
   },
 };
 describe("generic landing", () => {
+  it("ships product-specific native links in menu, featured items and Market, but never for unavailable items", () => {
+    const configured = structuredClone(content);
+    configured.items[0] = {
+      ...configured.items[0]!,
+      unavailable: false,
+      orderHref: "https://wa.me/51999999999?text=Bowl",
+    };
+    configured.conversion.href = "https://wa.me/51999999999?text=Consulta";
+    configured.categories.push({
+      id: "raw",
+      name: "Cortes",
+      section: "market",
+    });
+    configured.items.push(
+      {
+        id: "raw-cut",
+        name: "Corte crudo",
+        price: "S/ 20 / kg",
+        categoryId: "raw",
+        featured: false,
+        unavailable: false,
+        orderHref: "https://wa.me/51999999999?text=Corte",
+      },
+      {
+        id: "sold-out",
+        name: "Corte agotado",
+        price: "S/ 30 / kg",
+        categoryId: "raw",
+        featured: false,
+        unavailable: true,
+        orderHref: "https://wa.me/51999999999?text=Agotado",
+      },
+    );
+    const html = renderToStaticMarkup(<FoodLanding content={configured} />);
+    const featured = html.slice(
+      html.indexOf('id="destacados"'),
+      html.indexOf('id="carta"'),
+    );
+    const carta = html.slice(
+      html.indexOf('id="carta"'),
+      html.indexOf('id="market"'),
+    );
+    const market = html.slice(
+      html.indexOf('id="market"'),
+      html.indexOf('id="experiencia"'),
+    );
+    for (const section of [featured, carta])
+      expect(section).toContain('href="https://wa.me/51999999999?text=Bowl"');
+    expect(market).toContain('aria-label="Pedir Corte crudo por WhatsApp"');
+    expect(html).not.toContain('href="https://wa.me/51999999999?text=Agotado"');
+    expect(html).toContain(
+      "La disponibilidad y el pedido se confirman por WhatsApp.",
+    );
+    expect(html).not.toContain("No es un canal de pedidos.");
+  });
   it("gives catering its own section and inquiry while dish orders remain disabled", () => {
     const configured = structuredClone(content);
     configured.categories.push({

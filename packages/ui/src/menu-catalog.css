@@ -74,6 +74,19 @@
 .menu-photo-disclosure {
   margin-top: 5px;
 }
+.menu-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 1.25rem;
+  margin-top: 5px;
+}
+.menu-item-actions .menu-photo-disclosure {
+  margin-top: 0;
+}
+.menu-item-actions .menu-photo-disclosure[open] {
+  flex-basis: 100%;
+}
 
 .menu-photo-disclosure summary {
   display: inline-flex;

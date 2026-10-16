@@ -45,6 +45,31 @@ describe("conversion link", () => {
       page_path: "/",
     });
   });
+  it("attributes a product inquiry without forwarding its message or destination", () => {
+    const track = vi.fn();
+    render(
+      <ConversionLink
+        {...props}
+        appearance="text"
+        ariaLabel="Pedir Bowl por WhatsApp"
+        location="menu-item"
+        contentId="menu-bowl"
+        onTrack={track}
+      />,
+    );
+    const link = screen.getByRole("link", { name: "Pedir Bowl por WhatsApp" });
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+    fireEvent(link, event);
+    expect(event.defaultPrevented).toBe(false);
+    expect(track).toHaveBeenCalledWith({
+      cta_location: "menu-item",
+      intent: "order",
+      site_key: "synthetic-demo",
+      page_path: "/",
+      content_id: "menu-bowl",
+    });
+    expect(link.classList.contains("button")).toBe(false);
+  });
   it("sanitizes paths and editable attribution before calling an adapter", () => {
     window.history.replaceState({}, "", "/private-path?phone=999999999");
     const track = vi.fn();

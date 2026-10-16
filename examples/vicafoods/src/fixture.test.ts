@@ -7,14 +7,16 @@ import {
   siteContentSchema,
 } from "@pato-food/content-contract";
 import { vicafoodsContent, vicafoodsConfig } from "./index";
-it("validates the fixture and blocks production and live CTA", () => {
+it("validates the fixture, enables authorized WhatsApp and blocks public production", () => {
   expect(siteContentSchema.safeParse(vicafoodsContent).success).toBe(true);
   expect(
     vicafoodsConfig.publishBlocked &&
       vicafoodsConfig.internalOnly &&
       vicafoodsConfig.prospect,
   ).toBe(true);
-  expect(buildWhatsAppUrl(vicafoodsContent.whatsappConversion)).toBeNull();
+  expect(buildWhatsAppUrl(vicafoodsContent.whatsappConversion)).toContain(
+    "https://wa.me/51987384803?text=",
+  );
   expect(() => assertProductionContent(vicafoodsContent)).toThrow();
 });
 it("prioritizes S12/S13 for prepared food, preserves Market units", () => {

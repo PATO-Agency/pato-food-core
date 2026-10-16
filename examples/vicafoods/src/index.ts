@@ -178,8 +178,8 @@ export const vicafoodsContent = siteContentSchema.parse({
   whatsappConversion: {
     ...provenance,
     sourceRef:
-      "Usuario: número confirmado; consulta de catering autorizada 14/10/2026. Pedidos pendientes.",
-    enabled: false,
+      "Usuario: número confirmado; catering autorizado 14/10/2026 y pedidos por producto autorizados 15/10/2026.",
+    enabled: true,
     cateringEnabled: true,
     cateringMessage:
       "¡Hola, VICAFOODS! Quisiera consultar por el catering parrillero para un evento. ¿Podrían ayudarme con las opciones y la cotización?",
@@ -196,7 +196,7 @@ export const vicafoodsContent = siteContentSchema.parse({
       "floating",
       "footer",
     ],
-    fallbackLabel: "Canal configurado · activación pendiente",
+    fallbackLabel: "Canal de pedidos temporalmente deshabilitado",
   },
   menuCategories: [
     ...categories,
