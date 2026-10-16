@@ -1109,6 +1109,9 @@ p {
   .site-footer .wordmark {
     width: 100%;
   }
+  .legal-footer-nav {
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom));
+  }
 }
 button:focus-visible {
   outline: 3px solid var(--focus-ring);
