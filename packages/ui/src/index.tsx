@@ -595,6 +595,16 @@ export function FoodLanding({
             : "Gracias por compartir nuestra mesa."}
         </p>
         <span>Diseñado por PATO</span>
+        {c.legalLinks && c.legalLinks.length > 0 && (
+          <nav className="legal-footer-nav" aria-label="Información legal">
+            {c.legalLinks.map((link) => (
+              <a href={link.href} key={link.href}>
+                {link.label}
+              </a>
+            ))}
+            <p>Borradores con datos por confirmar.</p>
+          </nav>
+        )}
       </footer>
     </LandingMotion>
   );

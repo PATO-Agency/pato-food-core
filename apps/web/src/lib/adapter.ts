@@ -7,6 +7,7 @@ import {
   type SiteContent,
 } from "@pato-food/content-contract";
 import type { LandingContent } from "@pato-food/ui";
+import { legalFooterLinks } from "./legal-documents";
 
 export interface SiteConfiguration {
   siteKey: string;
@@ -17,6 +18,7 @@ export interface SiteConfiguration {
   publicUrl?: string;
   /** Keep the default generic until the client's business type is approved. */
   schemaType?: "FoodEstablishment" | "Restaurant";
+  legalPreviewEnabled?: boolean;
   theme: {
     primary: string;
     background?: string;
@@ -47,6 +49,7 @@ export function adaptContent(
   return {
     siteKey: config.siteKey,
     demo: config.internalOnly || config.publishBlocked,
+    legalLinks: config.legalPreviewEnabled ? legalFooterLinks : undefined,
     name: business.displayName,
     tagline: business.tagline,
     description: business.description,

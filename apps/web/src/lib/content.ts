@@ -3,6 +3,7 @@ import { vicafoodsContent, vicafoodsConfig } from "@pato-food/vicafoods";
 import { adaptContent, type SiteConfiguration } from "./adapter";
 import { resolveContentPolicy } from "./content-policy";
 import { getSanitySiteContent } from "./sanity";
+import { mayShowLegalDrafts } from "./legal-documents";
 
 export function resolveRuntimeContentPolicy() {
   const policy = resolveContentPolicy({
@@ -22,6 +23,11 @@ export function getSiteConfiguration(): SiteConfiguration {
   return {
     ...vicafoodsConfig,
     publicUrl: configuredPublicUrl || undefined,
+    legalPreviewEnabled: mayShowLegalDrafts({
+      ...vicafoodsConfig,
+      visibility: process.env.PATO_SITE_VISIBILITY,
+      deploymentEnvironment: process.env.VERCEL_ENV,
+    }),
   };
 }
 

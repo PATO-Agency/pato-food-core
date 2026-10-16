@@ -36,6 +36,7 @@ export interface LandingItem {
 export interface LandingContent {
   siteKey: string;
   demo: boolean;
+  legalLinks?: { href: string; label: string }[];
   name: string;
   tagline: string;
   description: string;

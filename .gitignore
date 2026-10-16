@@ -7,6 +7,7 @@ coverage/
 .vercel/
 # Internal planning and client records stay local.
 docs/
+work/legal/
 2026-09-16-pato-food-landing-design.md
 2026-09-16-pato-food-landing-service-launch.md
 .env

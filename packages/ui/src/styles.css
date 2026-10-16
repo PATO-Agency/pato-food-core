@@ -733,6 +733,7 @@ p {
 }
 .site-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   padding-block: 48px;
@@ -744,6 +745,31 @@ p {
 }
 .site-footer .wordmark {
   font-size: 22px;
+}
+.legal-footer-nav {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.legal-footer-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.legal-footer-nav a:hover {
+  color: var(--accent);
+}
+.legal-footer-nav p {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 /* Owner preference: keep authored motion active with reduced motion as well. */
 .button,
